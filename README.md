@@ -65,27 +65,25 @@ A fully automated **AI Security Research Lab & Self-Healing Pipeline** where:
 
 # 🏗️ Architecture & Core Pipeline
 
-```text
-┌───────────────────────────────────────────────────────────────────────────┐
-│                              Kali Linux VM                                │
-│                                                                           │
-│       ┌────────────────── 📄 orchestrator.py ──────────────────┐          │
-│       │                                                        │          │
-│       ▼                                                        ▼          │
-│ 🔴 Red Agent                                              🔵 Blue Agent   │
-│ (GPT-4o)                                                   (gpt-5.2)      │
-│                                                           │               │
-│ • Recon & scanning                                        • Build App     │
-│ • Exploitation                                            • Patch Code    │
-│ • Verification                                            • Redeploy      │
-│                                                           │               │
-│        ▲                                                  │               │
-│        └────────────── [ Closed Feedback Loop ] ──────────┘               │
-│                                                                           │
-│ 🎯 Target: Vulnerable Flask Web App (Docker Isolated Environment)         │
-└───────────────────────────────────────────────────────────────────────────┘
-```
+```mermaid
+flowchart LR
 
+O[orchestrator.py]
+
+R[🔴 Red Agent GPT-4o]
+B[🔵 Blue Agent gpt-5.2]
+
+T[🎯 Vulnerable Web App]
+
+R -->|Attack| T
+T -->|Logs| B
+B -->|Patch| T
+B -->|Redeploy| T
+R -->|Verify| T
+
+O --> R
+O --> B
+```
 ---
 
 # 🚀 Quick Start
