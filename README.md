@@ -4,7 +4,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Azure_OpenAI-GPT--4o-412991?logo=openai&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Azure_OpenAI-GPT--4o_&_gpt--5.2-412991?logo=openai&logoColor=white"/>
   <img src="https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white"/>
   <img src="https://img.shields.io/badge/Kali_Linux-Ready-557C94?logo=kalilinux&logoColor=white"/>
   <img src="https://img.shields.io/badge/Phase-2%20Autonomous-orange"/>
