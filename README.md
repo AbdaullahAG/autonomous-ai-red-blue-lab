@@ -8,7 +8,6 @@
   <img src="https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white"/>
   <img src="https://img.shields.io/badge/Kali_Linux-Ready-557C94?logo=kalilinux&logoColor=white"/>
   <img src="https://img.shields.io/badge/Pipeline-Closed--Loop_Autonomous-orange"/>
-  <img src="https://img.shields.io/badge/License-MIT-green"/>
 </p>
 
 <p align="center">
