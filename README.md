@@ -28,9 +28,9 @@
 | 💥 Full attack cycle (nmap → SQLi → XSS) | **70s** | **70s** |
 | 🛡️ Patch generated & redeployed | ~30s | **~30s** |
 | 🔁 Verification loop | manual | **autonomous** |
-| ⏱️ **Total end-to-end** | **< 2 min** | **< 2 min** |
+| ⏱️ **Total end-to-end** | **Depends on human speed** | **< 2 min** |
 | 💰 **Total API cost** | **~$0.08** | **~$0.08** |
-| 👤 **Human intervention** | **Zero** | **Zero** |
+| 👤 **Human intervention** | **Required at every phase** | **Zero** |
 
 ---
 
