@@ -476,7 +476,7 @@ Both layers must fail simultaneously for XSS to succeed. The model reasoned abou
           🐳 Docker rebuild with patched code
           └── ~20 seconds (cached layers)
 
-19:44:16  🔴 GPT-4o re-tests patched app
+18:37:36  🔴 GPT-4o re-tests patched app
           └── sqlmap: not injectable · XSS: escaped · 3 seconds
 
 ──────────────────────────────────────────────────────────
