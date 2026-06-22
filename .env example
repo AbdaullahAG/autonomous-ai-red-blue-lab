@@ -1,0 +1,14 @@
+# Azure OpenAI Configuration
+# Copy this file to .env and fill in your values
+# NEVER commit .env to GitHub
+
+AZURE_OPENAI_API_KEY=your-azure-openai-api-key-here
+AZURE_OPENAI_ENDPOINT=https://your-resource-name.openai.azure.com/
+
+# 🔴 Red Agent — GPT-4o (Attack)
+RED_DEPLOYMENT_NAME=gpt-4o
+RED_API_VERSION=2024-02-15-preview
+
+# 🔵 Blue Agent — your preferred model (Defense)
+BLUE_DEPLOYMENT_NAME=your-blue-model-deployment-name
+BLUE_API_VERSION=2024-02-15-preview
