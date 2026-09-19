@@ -1,0 +1,27 @@
+services:
+  ai-red-blue-lab:
+    build: .
+    container_name: ai-red-blue-lab
+    stdin_open: true
+    tty: true
+    networks:
+      - lab_internal
+    environment:
+      - AZURE_FOUNDRY_ENDPOINT
+      - AZURE_FOUNDRY_API_KEY
+      - AZURE_RED_DEPLOYMENT
+      - AZURE_BLUE_DEPLOYMENT
+    volumes:
+      - ./logs:/home/kali/ai-red-blue-lab/logs
+
+  target:
+    image: vulnerables/web-dvwa
+    container_name: lab-target
+    networks:
+      - lab_internal
+    # ما في ports مكشوفة للمضيف عمداً — الوصول فقط من جوا lab_internal
+
+networks:
+  lab_internal:
+    driver: bridge
+    internal: false   # false لأن ai-red-blue-lab محتاج يطلع لـ Azure Foundry API؛ الـ target معزول لأنه مالوش أي internet route غير عبر نفس الشبكة

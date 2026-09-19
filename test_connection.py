@@ -1,27 +1,29 @@
-# test_connection.py
 import os
 from dotenv import load_dotenv
-from openai import AzureOpenAI
+from openai import OpenAI
 
 load_dotenv()
 
-# عميل مشترك (نفس الـ endpoint)
-client = AzureOpenAI(
+# لاحظ: base_url لازم يوقف عند /openai/v1 بدون /responses بالآخر
+client = OpenAI(
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    api_version=os.getenv("RED_API_VERSION"),
+    base_url="https://wisecoder.services.ai.azure.com/openai/v1",
 )
 
 def test_model(deployment_name, label):
-    response = client.chat.completions.create(
+    response = client.responses.create(
         model=deployment_name,
-        messages=[{"role": "user", "content": "Say: Connection successful"}],
-      
+        input="Say: Connection successful",
     )
-    print(f"{label}: ✅ {response.choices[0].message.content}")
-    print(f"   Tokens: {response.usage.total_tokens}\n")
+    print(f"{label}: ✅ {response.output_text}")
+    print(f"   Deployment requested: {deployment_name}")
+    print(f"   Actual model version returned: {response.model}")
+    print()
+    return response.model
 
 print("=== اختبار الاتصال بالمودلين ===\n")
-test_model(os.getenv("RED_DEPLOYMENT_NAME"), "🔴 Red Agent (GPT-4o)")
-test_model(os.getenv("BLUE_DEPLOYMENT_NAME"), "🔵 Blue Agent (gpt-5.2)")
+red_version = test_model(os.getenv("RED_DEPLOYMENT_NAME"), "🔴 Red Agent")
+blue_version = test_model(os.getenv("BLUE_DEPLOYMENT_NAME"), "🔵 Blue Agent")
 print("=== اكتمل الاختبار ===")
+print(f"\nRED_MODEL_VERSION={red_version}")
+print(f"BLUE_MODEL_VERSION={blue_version}")

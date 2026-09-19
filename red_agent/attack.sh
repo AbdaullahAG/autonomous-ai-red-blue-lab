@@ -1,11 +1,11 @@
 #!/bin/bash
 
 TARGET="http://localhost:5000"
-LOG="$HOME/ai-red-blue-lab/logs/red_team_report.txt"
-mkdir -p "$HOME/ai-red-blue-lab/logs"
+LOG="/home/kali/ai-red-blue-lab/logs/red_team_report.txt"
+mkdir -p "/home/kali/ai-red-blue-lab/logs"
 
 echo "================================================" | tee -a "$LOG"
-echo "🔴 Red Team Attack Report - $(date)" | tee -a "$LOG"
+echo "🔴 Red Team Attack Report - $(date -u +"%Y-%m-%dT%H:%M:%SZ")" | tee -a "$LOG"
 echo "================================================" | tee -a "$LOG"
 
 # ----------------------------------------
@@ -43,7 +43,7 @@ sqlmap -u "$TARGET/login" \
     --risk=1 \
     --batch \
     --dump \
-    --output-dir="$HOME/ai-red-blue-lab/logs/sqlmap" \
+    --output-dir="/home/kali/ai-red-blue-lab/logs/sqlmap" \
     2>&1 | tee -a "$LOG"
 
 # ----------------------------------------
@@ -71,4 +71,4 @@ echo "📋 SUMMARY" | tee -a "$LOG"
 echo "================================================" | tee -a "$LOG"
 echo "Target: $TARGET" | tee -a "$LOG"
 echo "Report: $LOG" | tee -a "$LOG"
-echo "Completed: $(date)" | tee -a "$LOG"
+echo "Completed: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" | tee -a "$LOG"

@@ -1,0 +1,14 @@
+nohup: ignoring input
+[1/10] duration=112.4s patch=True validated=True kill_switch=False blocked=True chain_ok=True
+[2/10] duration=84.7s patch=True validated=True kill_switch=False blocked=True chain_ok=True
+[3/10] duration=110.0s patch=True validated=False kill_switch=True blocked=True chain_ok=True
+[4/10] duration=109.7s patch=True validated=True kill_switch=False blocked=True chain_ok=True
+[5/10] duration=111.2s patch=True validated=True kill_switch=False blocked=True chain_ok=True
+[6/10] duration=112.2s patch=True validated=True kill_switch=False blocked=True chain_ok=True
+[7/10] duration=114.2s patch=True validated=True kill_switch=False blocked=True chain_ok=True
+[8/10] duration=121.0s patch=True validated=True kill_switch=False blocked=True chain_ok=True
+[9/10] duration=134.5s patch=True validated=False kill_switch=True blocked=True chain_ok=True
+[10/10] duration=126.0s patch=True validated=False kill_switch=True blocked=True chain_ok=True
+
+=== DONE ===
+Completed 10/10 iterations

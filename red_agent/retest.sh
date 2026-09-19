@@ -1,10 +1,10 @@
 #!/bin/bash
 
 TARGET="http://localhost:5000"
-LOG="$HOME/ai-red-blue-lab/logs/retest_report.txt"
+LOG="/home/kali/ai-red-blue-lab/logs/retest_report.txt"
 
 echo "================================================" | tee "$LOG"
-echo "🔴 Red Team RE-TEST Report - $(date)" | tee -a "$LOG"
+echo "🔴 Red Team RE-TEST Report - $(date -u +"%Y-%m-%dT%H:%M:%SZ")" | tee -a "$LOG"
 echo "   Target: PATCHED APPLICATION" | tee -a "$LOG"
 echo "================================================" | tee -a "$LOG"
 
@@ -45,7 +45,7 @@ sqlmap -u "$TARGET/login" \
     --risk=1 \
     --batch \
     --flush-session \
-    --output-dir="$HOME/ai-red-blue-lab/logs/sqlmap_retest" \
+    --output-dir="/home/kali/ai-red-blue-lab/logs/sqlmap_retest" \
     2>&1 | tee -a "$LOG"
 
 # ----------------------------------------
@@ -78,4 +78,4 @@ echo "|----------------|--------------|-------------|" | tee -a "$LOG"
 echo "| SQL Injection  | EXPLOITED ❌  | BLOCKED  ✅  |" | tee -a "$LOG"
 echo "| Stored XSS     | EXPLOITED ❌  | BLOCKED  ✅  |" | tee -a "$LOG"
 echo "================================================" | tee -a "$LOG"
-echo "Completed: $(date)" | tee -a "$LOG"
+echo "Completed: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" | tee -a "$LOG"

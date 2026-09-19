@@ -1,0 +1,14 @@
+red-team:
+  allowed_binaries: [nmap, sqlmap, curl, bash]
+  allowed_scripts: [red_agent/attack.sh, red_agent/retest.sh]
+  target_scope: [localhost, 127.0.0.1]
+  write_paths: [logs/, reports/]
+  denied_paths: [webapp/app.py, webapp/]
+
+blue-team:
+  allowed_binaries: [curl]
+  allowed_scripts: []
+  denied_binaries: [sqlmap]
+  target_scope: [localhost, 127.0.0.1]
+  write_paths: [webapp/app.py]
+  write_scope: exact

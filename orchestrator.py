@@ -1,121 +1,234 @@
 import os
 import subprocess
 import time
-from openai import AzureOpenAI
+import uuid
+from openai import OpenAI
 from dotenv import load_dotenv
+from core.identity import AgentIdentity, log_action, verify_chain, log_kill_switch
+from core.scope import check_binary_allowed, check_write_allowed, ScopeViolation
 
-# 1. تحميل الإعدادات والمفاتيح
 load_dotenv()
 
-client_red = AzureOpenAI(
+SESSION_ID = str(uuid.uuid4())[:8]
+
+client = OpenAI(
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    api_version=os.getenv("RED_API_VERSION"),
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
+    base_url="https://wisecoder.services.ai.azure.com/openai/v1",
 )
 
-client_blue = AzureOpenAI(
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    api_version=os.getenv("BLUE_API_VERSION"),
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
-)
+RED = AgentIdentity(role="red-team", instance_id=SESSION_ID)
+BLUE = AgentIdentity(role="blue-team", instance_id=SESSION_ID)
 
+BASE = os.path.dirname(os.path.abspath(__file__))
 TARGET_URL = "http://localhost:5000"
 
-def run_command(command):
-    """دالة مساعدة لتشغيل أوامر النظام (مثل دكر أو أدوات الفحص)"""
-    try:
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=30)
-        return result.stdout + "\n" + result.stderr
-    except subprocess.TimeoutExpired:
-        return "[Timeout] استغرق الأمر وقتاً طويلاً."
 
-print("Red Team vs Blue Team...")
+def run_script(script_path, log_path, agent, purpose):
+    """ينفذ سكريبت هجوم/إعادة اختبار حقيقي فعلياً، ويسجل الحدث بالكامل."""
+    result = subprocess.run(
+        ["bash", script_path], capture_output=True, text=True, timeout=600
+    )
+    with open(log_path, "r") as f:
+        report = f.read()
+
+    log_action(
+        agent=agent,
+        declared_purpose=purpose,
+        action_taken=f"executed {os.path.basename(script_path)} (real nmap/sqlmap/curl against {TARGET_URL})",
+        scope_used=f"target={TARGET_URL}",
+        authority_basis=f"lab-authorized-{agent.role}-role",
+        outcome="executed" if result.returncode == 0 else f"executed_with_errors:{result.returncode}",
+    )
+    return report
+
+
+def call_model(deployment, system_prompt, user_prompt):
+    response = client.responses.create(
+        model=deployment,
+        input=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+    )
+    return response.output_text
+
+
+# فحص نطاق أولي: تأكد Red مسموح له الأدوات الأساسية قبل بدء الحلقة
+for binary in ["nmap", "sqlmap", "curl"]:
+    check_binary_allowed(RED, binary, TARGET_URL)
+
+print(f"Red Team vs Blue Team... session={SESSION_ID}")
 print("==================================================")
 
-# --- الجولة الأولى: الهجوم التلقائي ---
-print("\n [lvl 1] lunch (Red Agent)...")
-
-# هنا نطلب من GPT-4o التخطيط للهجوم بناءً على الهدف المتاح
-red_prompt = f"You are an expert automated Red Team agent. The target is {TARGET_URL}. Provide a strategy and execute simulated tests against it (SQLi and XSS). Return a detailed security report of what was found."
-
-red_response = client_red.chat.completions.create(
-    model=os.getenv("RED_DEPLOYMENT_NAME"),
-    messages=[{"role": "user", "content": red_prompt}]
+# --- [1] هجوم حقيقي ---
+print("\n[lvl 1] Red Agent executing REAL attack (nmap/sqlmap/curl)...")
+attack_report = run_script(
+    f"{BASE}/red_agent/attack.sh",
+    f"{BASE}/logs/red_team_report.txt",
+    RED,
+    "initial_exploitation_attempt",
 )
-attack_report = red_response.choices[0].message.content
-print("Red Agent Successfully Report !")
+print(f"   Attack report: {len(attack_report)} chars")
 
-
-# --- الجولة الثانية: الدفاع التلقائي ---
-print("\n [lvl 2] The coordinator automatically submits the report to the Blue Agent...")
-
-# نقرأ الكود الضعيف الحالي لنسلمه للمدافع مع التقرير
-with open("webapp/app.py", "r") as f:
-    current_code = f.read()
-
-blue_prompt = f"""
-You are an expert Blue Team security engineer. 
-Analyze this attack report:
----
-{attack_report}
----
-And fix the security vulnerabilities in this Flask code:
----
-{current_code}
----
-Return ONLY the complete, corrected Python code inside a markdown code block. Do not write explanations.
-"""
-
-blue_response = client_blue.chat.completions.create(
-    model=os.getenv("BLUE_DEPLOYMENT_NAME"),
-    messages=[{"role": "user", "content": blue_prompt}],
-    max_completion_tokens=2000 # متوافق مع gpt-5.2 لتوكنز التفكير
+# --- [2] تحليل Red Agent (LLM) للنتائج الحقيقية ---
+red_analysis = call_model(
+    os.getenv("RED_DEPLOYMENT_NAME"),
+    "أنت خبير اختبار اختراق (Red Team). حلّل نتائج الهجوم الحقيقية وقدّم ملخص الثغرات مع درجة الخطورة والأدلة.",
+    f"حلّل تقرير الاختراق التالي:\n\n{attack_report}",
 )
+log_action(
+    agent=RED,
+    declared_purpose="analyze_real_attack_output",
+    action_taken="LLM analysis of real attack.sh output",
+    scope_used=f"target={TARGET_URL}",
+    authority_basis="lab-authorized-red-team-role",
+    outcome="analysis_generated",
+)
+print("Red Agent analysis complete.")
 
-fixed_code_raw = blue_response.choices[0].message.content
+# --- [3] ترقيع Blue Agent (مع حلقة إعادة محاولة محدودة + kill-switch) ---
+from core.validate import check_legit_login
 
-# تنظيف المخرجات واستخراج كود البايثون فقط
-if "```python" in fixed_code_raw:
-    fixed_code = fixed_code_raw.split("```python")[1].split("```")[0].strip()
-else:
-    fixed_code = fixed_code_raw.strip()
+MAX_PATCH_ATTEMPTS = 3
+attempt_log_refs = []
+patch_succeeded = False
 
-# كتابة الكود الجديد المُصلح فوق الكود القديم تلقائياً
-with open("webapp/app.py", "w") as f:
-    f.write(fixed_code)
-print(" Blue Agent patch code and rewrite the file auto")
+with open(f"{BASE}/webapp/app.py", "r") as f:
+    original_code = f.read()
 
+current_code = original_code
 
-# --- الجولة الثالثة: إعادة البناء والتحقق التلقائي ---
-print("\n [lvl 3] The coordinator rebuilds the Docker environment with the new code...")
-rebuild_output = run_command("cd webapp && docker compose down && docker compose up -d --build")
-print("update docker and patch.")
+for attempt in range(1, MAX_PATCH_ATTEMPTS + 1):
+    print(f"\n[lvl 2] Blue Agent patching (attempt {attempt}/{MAX_PATCH_ATTEMPTS})...")
 
-time.sleep(3) # انتظار قصير لضمان تشغيل السيرفر
+    patched_code = call_model(
+        os.getenv("BLUE_DEPLOYMENT_NAME"),
+        """أنت مطور أمني خبير (Blue Team). أعد الكود الكامل لـ app.py بعد الإصلاح فقط، بدون شرح.
+الكود يجب أن يبدأ بـ: from flask import
+لا تضع ```python حول الكود. أصلح SQLi بـ Parameterized Queries وXSS بـ html.escape().""",
+        f"تقرير Red Team:\n{red_analysis}\n\nالكود الحالي:\n{current_code}\n\nأعد الكود الكامل بعد الإصلاح.",
+    )
 
-print("\n [lvl 4] The coordinator calls on Red Agent once again to verify the effectiveness of the patch.....")
+    patched_code = patched_code.strip()
+    if patched_code.startswith("```"):
+        patched_code = "\n".join(patched_code.split("\n")[1:-1])
 
-# تعديل الـ Prompt لمنع حظر الذكاء الاصطناعي وجعله يحلل الكود الجديد
-verify_prompt = f"""
-You are the Red Team agent. The Blue Team claims they fixed the security vulnerabilities.
-Here is the newly patched Flask code they just deployed:
----
-{fixed_code}
----
-Analyze this updated code and simulate how your previous payloads (SQL Injection and Stored XSS) would react against it. 
-Provide a final verification report confirming if the patches successfully BLOCKED the attacks or if any bypass exists.
-"""
+    if "from flask import" not in patched_code:
+        rec = log_action(
+            agent=BLUE, declared_purpose="patch_reported_vulnerabilities",
+            action_taken=f"patch_generation_failed_validation (attempt {attempt})",
+            scope_used="file:webapp/app.py",
+            authority_basis="lab-authorized-blue-team-role",
+            outcome="rejected_invalid_patch",
+        )
+        attempt_log_refs.append(rec["record_hash"])
+        continue
 
-verify_response = client_red.chat.completions.create(
-    model=os.getenv("RED_DEPLOYMENT_NAME"),
-    messages=[{"role": "user", "content": verify_prompt}]
+    check_write_allowed(BLUE, f"{BASE}/webapp/app.py")
+
+    with open(f"{BASE}/webapp/app.py.backup", "w") as f:
+        f.write(current_code)
+    with open(f"{BASE}/webapp/app.py", "w") as f:
+        f.write(patched_code)
+
+    log_action(
+        agent=BLUE, declared_purpose="patch_reported_vulnerabilities",
+        action_taken=f"rewrote webapp/app.py based on real attack analysis (attempt {attempt})",
+        scope_used="file:webapp/app.py",
+        authority_basis="lab-authorized-blue-team-role",
+        outcome="patch_applied",
+    )
+    print("Blue Agent patched webapp/app.py.")
+
+    try:
+        check_binary_allowed(BLUE, "sqlmap", TARGET_URL)
+    except ScopeViolation as e:
+        print(f"   (confirmed) {e}")
+
+    print("Restarting Flask with patched code...")
+    subprocess.run("pkill -9 -f 'python3 webapp/app.py'", shell=True)
+    time.sleep(1)
+    subprocess.Popen(
+        ["python3", "webapp/app.py"],
+        cwd=BASE,
+        stdout=open(f"{BASE}/logs/flask_stdout.log", "w"),
+        stderr=subprocess.STDOUT,
+    )
+    time.sleep(2)
+
+    print("Validating patch does not break legitimate functionality...")
+    legit_ok = check_legit_login(TARGET_URL)
+
+    if legit_ok:
+        rec = log_action(
+            agent=BLUE,
+            declared_purpose="validate_patch_safety",
+            action_taken=f"tested legitimate login against patched code (attempt {attempt})",
+            scope_used="file:webapp/app.py",
+            authority_basis="lab-authorized-blue-team-role",
+            outcome="validation_passed",
+        )
+        print("✅ Patch validated: legitimate functionality intact.")
+        patch_succeeded = True
+        break
+
+    rec = log_action(
+        agent=BLUE,
+        declared_purpose="validate_patch_safety",
+        action_taken=f"tested legitimate login against patched code (attempt {attempt})",
+        scope_used="file:webapp/app.py",
+        authority_basis="lab-authorized-blue-team-role",
+        outcome="patch_rejected_regression",
+    )
+    attempt_log_refs.append(rec["record_hash"])
+    print(f"❌ REGRESSION DETECTED on attempt {attempt}. Rolling back and retrying...")
+
+    subprocess.run("pkill -9 -f 'python3 webapp/app.py'", shell=True)
+    time.sleep(1)
+    with open(f"{BASE}/webapp/app.py", "w") as f:
+        f.write(current_code)
+    subprocess.Popen(
+        ["python3", "webapp/app.py"],
+        cwd=BASE,
+        stdout=open(f"{BASE}/logs/flask_stdout.log", "a"),
+        stderr=subprocess.STDOUT,
+    )
+    time.sleep(2)
+
+    log_action(
+        agent=BLUE,
+        declared_purpose="rollback_rejected_patch",
+        action_taken=f"restored pre-patch webapp/app.py after regression (attempt {attempt})",
+        scope_used="file:webapp/app.py",
+        authority_basis="lab-authorized-blue-team-role",
+        outcome="rolled_back",
+    )
+
+if not patch_succeeded:
+    log_kill_switch(
+        reason="N_consecutive_regression_failures",
+        n=MAX_PATCH_ATTEMPTS,
+        attempts_log_refs=attempt_log_refs,
+    )
+    print(f"\n==================================================")
+    print(f"🛑 KILL-SWITCH TRIGGERED after {MAX_PATCH_ATTEMPTS} failed attempts.")
+    print(f"Evidence log chain valid: {verify_chain()}")
+    raise SystemExit(
+        f"توقفت الحلقة نهائياً: {MAX_PATCH_ATTEMPTS} محاولات ترقيع متتالية فشلت (regression). "
+        f"راجع logs/evidence_log.jsonl للتفاصيل."
+    )
+
+# --- [5] إعادة اختبار  ---
+print("\n[lvl 4] Red Agent RE-TESTING patch (real requests)...")
+retest_report = run_script(
+    f"{BASE}/red_agent/retest.sh",
+    f"{BASE}/logs/retest_report.txt",
+    RED,
+    "verify_patch_effectiveness",
 )
 
 print("\n==================================================")
-print(" النتيجة النهائية لإعادة الاختبار بعد الترقيع التلقائي:")
-print(verify_response.choices[0].message.content)
-
-
+print("نتيجة  الاختبار :")
+print(retest_report)
 print("\n==================================================")
-print("النتيجة النهائية لإعادة الاختبار بعد الترقيع التلقائي:")
-print(verify_response.choices[0].message.content)
+print(f"Evidence log chain valid: {verify_chain()}")
