@@ -148,7 +148,7 @@ If you are unsure whether your intended use is authorized, it is not — get wri
 
 ## 📄 Citation
 
-If you use this work, please cite the accompanying preprint (see [`/paper`](./https://doi.org/10.5281/zenodo.22843928) for the full BibTeX entry once assigned a DOI on Zenodo).
+If you use this work, please cite the accompanying preprint (see [`/paper`](https://doi.org/10.5281/zenodo.22843928) for the full BibTeX entry once assigned a DOI on Zenodo).
 
 ## 👤 Author
 
