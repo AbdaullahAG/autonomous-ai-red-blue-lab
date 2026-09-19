@@ -148,7 +148,21 @@ If you are unsure whether your intended use is authorized, it is not — get wri
 
 ## 📄 Citation
 
-If you use this work, please cite the accompanying preprint (see [`/paper`](https://doi.org/10.5281/zenodo.22843928) for the full BibTeX entry once assigned a DOI on Zenodo).
+If you use this work, please cite the accompanying preprint (see [`/paper`](https://doi.org/10.5281/zenodo.22843928) 
+
+for the full BibTeX : 
+@misc{abughallous_2026_22843928,
+  author       = {Abughallous, Abdallah M.},
+  title        = {Traceable Autonomy: Identity, Scope Enforcement,
+                   and Containment in a Closed-Loop Red/Blue Agent
+                   Pipeline
+                  },
+  month        = sep,
+  year         = 2026,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.22843928},
+  url          = {https://doi.org/10.5281/zenodo.22843928},
+}).
 
 ## 👤 Author
 
