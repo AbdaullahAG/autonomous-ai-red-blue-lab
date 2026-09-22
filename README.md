@@ -32,52 +32,53 @@ This project is used as a real-world worked example for the **OWASP GenAI Securi
 ## 🏗️ Architecture
 
 ```mermaid
-flowchart TD
-    subgraph Loop ["Closed Loop — Autonomous AI Pipeline"]
-        direction TB
-        
-        A["🔴 Red Team Agent<br/><code>spiffe://.../red-team/session</code>"]
-        T[("🎯 Target App<br/>Vulnerable Flask + SQLite")]
-        L1["🔵 LLM Attack Analysis"]
-        B["🔵 Blue Team Agent<br/><code>spiffe://.../blue-team/session</code>"]
-        V{"✅ Validation Gate<br/>Login probe check"}
-        A2["🔴 Red Retest Agent<br/>Re-attacks patched app"]
-        K["🛑 Kill-Switch<br/>Rollback + Halt"]
-        R["📊 Final Result<br/>BLOCKED / EXPLOITED"]
+    subgraph Loop["Closed Loop — no human in the middle"]
 
-        A -->|"Real nmap / sqlmap / curl"| T
-        T -->|"Raw attack output"| A
-        A -->|"Attack report"| L1
-        L1 --> B
-        B -->|"Apply source patch"| T
-        B --> V
-        V -- "Pass (App operational)" --> A2
-        V -- "Fail ×3 (Regression)" --> K
-        A2 --> R
+        A["🔴 Red Team Agent<br/>spiffe://.../red-team/session"] -->|"real nmap/sqlmap/curl"| T[("🎯 Target<br/>Vulnerable Flask + SQLite")]
+
+        T -->|"real attack output"| A
+
+        A -->|"attack report"| L1["🔵 LLM Analysis"]
+
+        L1 --> B["🔵 Blue Team Agent<br/>spiffe://.../blue-team/session"]
+
+        B -->|"patch"| T
+
+        B --> V{"✅ Validation Gate<br/>legit login still works?"}
+
+        V -- "yes" --> A2["🔴 Red re-attacks patched app"]
+
+        V -- "no ×3" --> K["🛑 Kill-Switch<br/>rollback + halt"]
+
+        A2 -->|"BLOCKED / EXPLOITED"| R["📊 Result"]
+
     end
 
-    E[("🧾 Evidence Log<br/>SHA-256 Hash-Chained")]
-    S{"🚧 Scope Engine<br/><code>agent_scope.yaml</code>"}
 
-    %% External Connections
-    A -.->|"Log every action"| E
-    B -.->|"Log every action"| E
-    A -.->|"Pre-execution check"| S
-    B -.->|"Pre-execution check"| S
+
+    A -.->|"every action"| E[("🧾 Hash-Chained<br/>Evidence Log")]
+
+    B -.->|"every action"| E
+
+    A -.->|"scope check"| S{"agent_scope.yaml"}
+
+    B -.->|"scope check"| S
+
     S -.->|"denied_out_of_scope"| E
 
-    %% Styling
-    classDef red fill:#e74c3c,stroke:#c0392b,color:#fff,stroke-width:2px;
-    classDef blue fill:#3498db,stroke:#2980b9,color:#fff,stroke-width:2px;
-    classDef dark fill:#2c3e50,stroke:#1a252f,color:#fff,stroke-width:2px;
-    classDef log fill:#f1c40f,stroke:#f39c12,color:#2c3e50,stroke-width:2px;
-    classDef target fill:#ecf0f1,stroke:#bdc3c7,color:#2c3e50,stroke-width:2px;
 
-    class A,A2 red;
-    class B,L1 blue;
-    class K dark;
-    class E,S log;
-    class T target;
+
+    style A fill:#ff6b6b,color:#fff
+
+    style A2 fill:#ff6b6b,color:#fff
+
+    style B fill:#4dabf7,color:#fff
+
+    style K fill:#212529,color:#fff
+
+    style E fill:#ffd43b
+
+
 ```
 
 ---
