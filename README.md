@@ -56,8 +56,6 @@ flowchart TD
     style B fill:#4dabf7,color:#fff
     style K fill:#212529,color:#fff
     style E fill:#ffd43b
-
-
 ```
 
 ---
