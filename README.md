@@ -32,50 +32,29 @@ This project is used as a real-world worked example for the **OWASP GenAI Securi
 ## 🏗️ Architecture
 
 ```mermaid
+flowchart TD
     subgraph Loop["Closed Loop — no human in the middle"]
-
         A["🔴 Red Team Agent<br/>spiffe://.../red-team/session"] -->|"real nmap/sqlmap/curl"| T[("🎯 Target<br/>Vulnerable Flask + SQLite")]
-
         T -->|"real attack output"| A
-
         A -->|"attack report"| L1["🔵 LLM Analysis"]
-
         L1 --> B["🔵 Blue Team Agent<br/>spiffe://.../blue-team/session"]
-
         B -->|"patch"| T
-
         B --> V{"✅ Validation Gate<br/>legit login still works?"}
-
         V -- "yes" --> A2["🔴 Red re-attacks patched app"]
-
         V -- "no ×3" --> K["🛑 Kill-Switch<br/>rollback + halt"]
-
         A2 -->|"BLOCKED / EXPLOITED"| R["📊 Result"]
-
     end
 
-
-
     A -.->|"every action"| E[("🧾 Hash-Chained<br/>Evidence Log")]
-
     B -.->|"every action"| E
-
     A -.->|"scope check"| S{"agent_scope.yaml"}
-
     B -.->|"scope check"| S
-
     S -.->|"denied_out_of_scope"| E
 
-
-
     style A fill:#ff6b6b,color:#fff
-
     style A2 fill:#ff6b6b,color:#fff
-
     style B fill:#4dabf7,color:#fff
-
     style K fill:#212529,color:#fff
-
     style E fill:#ffd43b
 
 
