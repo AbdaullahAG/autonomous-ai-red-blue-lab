@@ -1,0 +1,157 @@
+================================================
+🔴 Red Team RE-TEST Report - 2026-09-19T08:45:09Z
+   Target: PATCHED APPLICATION
+================================================
+
+[1] 💉 SQL INJECTION - Re-test
+✅ PATCHED: SQL Injection blocked!
+✅ CONFIRMED: Legitimate login still works!
+
+[2] 🤖 SQLMAP RE-TEST
+        ___
+       __H__
+ ___ ___[)]_____ ___ ___  {1.10.8#stable}
+|_ -| . [.]     | .'| . |
+|___|_  [(]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:45:09 /2026-09-19/
+
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[24;1H[?1049l[23;0;0t[?1l>[08:45:09] [WARNING] using '/home/kali/ai-red-blue-lab/logs/sqlmap_retest' as the output directory
+[1/1] URL:
+GET http://localhost:5000/login
+POST data: username=admin&password=test
+do you want to test this URL? [Y/n/q]
+> Y
+[08:45:09] [INFO] testing URL 'http://localhost:5000/login'
+[08:45:09] [INFO] flushing session file
+[08:45:09] [INFO] using '/home/kali/ai-red-blue-lab/logs/sqlmap_retest/results-09192026_0845am.csv' as the CSV results file in multiple targets mode
+[08:45:09] [INFO] testing connection to the target URL
+[08:45:09] [INFO] checking if the target is protected by some kind of WAF/IPS
+[08:45:10] [INFO] testing if the target URL content is stable
+[08:45:10] [INFO] target URL content is stable
+[08:45:10] [INFO] testing if POST parameter 'username' is dynamic
+[08:45:10] [WARNING] POST parameter 'username' does not appear to be dynamic
+[08:45:10] [WARNING] heuristic (basic) test shows that POST parameter 'username' might not be injectable
+[08:45:10] [INFO] testing for SQL injection on POST parameter 'username'
+[08:45:10] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause'
+[08:45:11] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause (subquery - comment)'
+[08:45:12] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause (comment)'
+[08:45:12] [INFO] testing 'MySQL RLIKE boolean-based blind - WHERE, HAVING, ORDER BY or GROUP BY clause'
+[08:45:13] [INFO] testing 'PostgreSQL AND boolean-based blind - WHERE or HAVING clause (CAST)'
+[08:45:14] [INFO] testing 'Oracle AND boolean-based blind - WHERE or HAVING clause (CTXSYS.DRITHSX.SN)'
+[08:45:15] [INFO] testing 'SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)'
+[08:45:16] [INFO] testing 'Boolean-based blind - Parameter replace (original value)'
+[08:45:16] [INFO] testing 'Boolean-based blind - Parameter replace (DUAL)'
+[08:45:16] [INFO] testing 'Boolean-based blind - Parameter replace (CASE)'
+[08:45:16] [INFO] testing 'MySQL >= 5.0 boolean-based blind - ORDER BY, GROUP BY clause'
+[08:45:16] [INFO] testing 'PostgreSQL boolean-based blind - ORDER BY, GROUP BY clause'
+[08:45:16] [INFO] testing 'MySQL >= 5.6 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (GTID_SUBSET)'
+[08:45:17] [INFO] testing 'MySQL >= 5.1 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (EXTRACTVALUE)'
+[08:45:18] [INFO] testing 'PostgreSQL AND error-based - WHERE or HAVING clause'
+[08:45:18] [INFO] testing 'Microsoft SQL Server/Sybase AND error-based - WHERE or HAVING clause (IN)'
+[08:45:19] [INFO] testing 'Microsoft SQL Server/Sybase AND error-based - WHERE or HAVING clause (CONVERT)'
+[08:45:20] [INFO] testing 'Microsoft SQL Server/Sybase AND error-based - WHERE or HAVING clause (CONCAT)'
+[08:45:21] [INFO] testing 'Oracle AND error-based - WHERE or HAVING clause (XMLType)'
+[08:45:22] [INFO] testing 'Oracle AND error-based - WHERE or HAVING clause (DBMS_UTILITY.SQLID_TO_SQLHASH)'
+[08:45:22] [INFO] testing 'H2 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (CAST)'
+[08:45:23] [INFO] testing 'SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)'
+[08:45:24] [INFO] testing 'MySQL >= 5.1 error-based - Parameter replace (EXTRACTVALUE)'
+[08:45:24] [INFO] testing 'PostgreSQL error-based - Parameter replace'
+[08:45:24] [INFO] testing 'Microsoft SQL Server error-based - Stacking (RAISERROR)'
+[08:45:25] [INFO] testing 'Microsoft SQL Server/Sybase error-based - Stacking (EXEC)'
+[08:45:25] [INFO] testing 'Generic inline queries'
+[08:45:25] [INFO] testing 'MySQL inline queries'
+[08:45:26] [INFO] testing 'PostgreSQL inline queries'
+[08:45:26] [INFO] testing 'Microsoft SQL Server/Sybase inline queries'
+[08:45:26] [INFO] testing 'Oracle inline queries'
+[08:45:26] [INFO] testing 'MySQL >= 5.0.12 stacked queries (comment)'
+[08:45:26] [INFO] testing 'PostgreSQL > 8.1 stacked queries (comment)'
+[08:45:27] [INFO] testing 'Microsoft SQL Server/Sybase stacked queries (comment)'
+[08:45:28] [INFO] testing 'Microsoft SQL Server/Sybase stacked queries (DECLARE - comment)'
+[08:45:28] [INFO] testing 'Oracle stacked queries (DBMS_PIPE.RECEIVE_MESSAGE - comment)'
+[08:45:29] [INFO] testing 'MySQL >= 5.0.12 AND time-based blind (query SLEEP)'
+[08:45:30] [INFO] testing 'MySQL >= 5.0.12 AND time-based blind (SLEEP)'
+[08:45:31] [INFO] testing 'MySQL >= 5.0.12 RLIKE time-based blind'
+[08:45:31] [INFO] testing 'PostgreSQL > 8.1 AND time-based blind'
+[08:45:32] [INFO] testing 'Microsoft SQL Server/Sybase time-based blind (IF)'
+[08:45:33] [INFO] testing 'Oracle AND time-based blind'
+[08:45:34] [INFO] testing 'CUBRID AND time-based blind (SLEEP)'
+[08:45:35] [INFO] testing 'CUBRID OR time-based blind (SLEEP)'
+[08:45:36] [INFO] testing 'MySQL >= 5.0.12 time-based blind - Parameter replace'
+it is recommended to perform only basic UNION tests if there is not at least one other (potential) technique found. Do you want to reduce the number of requests? [Y/n] Y
+[08:45:36] [INFO] testing 'Generic UNION query (NULL) - 1 to 10 columns'
+[08:45:37] [INFO] testing 'MySQL UNION query (NULL) - 1 to 10 columns'
+[08:45:39] [WARNING] POST parameter 'username' does not seem to be injectable
+[08:45:39] [INFO] testing if POST parameter 'password' is dynamic
+[08:45:39] [WARNING] POST parameter 'password' does not appear to be dynamic
+[08:45:39] [WARNING] heuristic (basic) test shows that POST parameter 'password' might not be injectable
+[08:45:39] [INFO] testing for SQL injection on POST parameter 'password'
+[08:45:39] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause'
+[08:45:40] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause (subquery - comment)'
+[08:45:41] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause (comment)'
+[08:45:41] [INFO] testing 'MySQL RLIKE boolean-based blind - WHERE, HAVING, ORDER BY or GROUP BY clause'
+[08:45:42] [INFO] testing 'PostgreSQL AND boolean-based blind - WHERE or HAVING clause (CAST)'
+[08:45:43] [INFO] testing 'Oracle AND boolean-based blind - WHERE or HAVING clause (CTXSYS.DRITHSX.SN)'
+[08:45:44] [INFO] testing 'SQLite AND boolean-based blind - WHERE or HAVING clause (JSON)'
+[08:45:45] [INFO] testing 'Boolean-based blind - Parameter replace (original value)'
+[08:45:45] [INFO] testing 'Boolean-based blind - Parameter replace (DUAL)'
+[08:45:45] [INFO] testing 'Boolean-based blind - Parameter replace (CASE)'
+[08:45:45] [INFO] testing 'MySQL >= 5.0 boolean-based blind - ORDER BY, GROUP BY clause'
+[08:45:45] [INFO] testing 'PostgreSQL boolean-based blind - ORDER BY, GROUP BY clause'
+[08:45:45] [INFO] testing 'MySQL >= 5.6 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (GTID_SUBSET)'
+[08:45:46] [INFO] testing 'MySQL >= 5.1 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (EXTRACTVALUE)'
+[08:45:47] [INFO] testing 'PostgreSQL AND error-based - WHERE or HAVING clause'
+[08:45:48] [INFO] testing 'Microsoft SQL Server/Sybase AND error-based - WHERE or HAVING clause (IN)'
+[08:45:48] [INFO] testing 'Microsoft SQL Server/Sybase AND error-based - WHERE or HAVING clause (CONVERT)'
+[08:45:49] [INFO] testing 'Microsoft SQL Server/Sybase AND error-based - WHERE or HAVING clause (CONCAT)'
+[08:45:50] [INFO] testing 'Oracle AND error-based - WHERE or HAVING clause (XMLType)'
+[08:45:51] [INFO] testing 'Oracle AND error-based - WHERE or HAVING clause (DBMS_UTILITY.SQLID_TO_SQLHASH)'
+[08:45:52] [INFO] testing 'H2 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (CAST)'
+[08:45:52] [INFO] testing 'SQLite >= 3.9 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (JSON path)'
+[08:45:53] [INFO] testing 'MySQL >= 5.1 error-based - Parameter replace (EXTRACTVALUE)'
+[08:45:53] [INFO] testing 'PostgreSQL error-based - Parameter replace'
+[08:45:53] [INFO] testing 'Microsoft SQL Server error-based - Stacking (RAISERROR)'
+[08:45:54] [INFO] testing 'Microsoft SQL Server/Sybase error-based - Stacking (EXEC)'
+[08:45:55] [INFO] testing 'Generic inline queries'
+[08:45:55] [INFO] testing 'MySQL inline queries'
+[08:45:55] [INFO] testing 'PostgreSQL inline queries'
+[08:45:55] [INFO] testing 'Microsoft SQL Server/Sybase inline queries'
+[08:45:55] [INFO] testing 'Oracle inline queries'
+[08:45:55] [INFO] testing 'MySQL >= 5.0.12 stacked queries (comment)'
+[08:45:56] [INFO] testing 'PostgreSQL > 8.1 stacked queries (comment)'
+[08:45:56] [INFO] testing 'Microsoft SQL Server/Sybase stacked queries (comment)'
+[08:45:57] [INFO] testing 'Microsoft SQL Server/Sybase stacked queries (DECLARE - comment)'
+[08:45:57] [INFO] testing 'Oracle stacked queries (DBMS_PIPE.RECEIVE_MESSAGE - comment)'
+[08:45:58] [INFO] testing 'MySQL >= 5.0.12 AND time-based blind (query SLEEP)'
+[08:45:59] [INFO] testing 'MySQL >= 5.0.12 AND time-based blind (SLEEP)'
+[08:46:00] [INFO] testing 'MySQL >= 5.0.12 RLIKE time-based blind'
+[08:46:00] [INFO] testing 'PostgreSQL > 8.1 AND time-based blind'
+[08:46:01] [INFO] testing 'Microsoft SQL Server/Sybase time-based blind (IF)'
+[08:46:02] [INFO] testing 'Oracle AND time-based blind'
+[08:46:03] [INFO] testing 'CUBRID AND time-based blind (SLEEP)'
+[08:46:04] [INFO] testing 'CUBRID OR time-based blind (SLEEP)'
+[08:46:04] [INFO] testing 'MySQL >= 5.0.12 time-based blind - Parameter replace'
+[08:46:05] [INFO] testing 'Generic UNION query (NULL) - 1 to 10 columns'
+[08:46:06] [INFO] testing 'MySQL UNION query (NULL) - 1 to 10 columns'
+[08:46:08] [WARNING] POST parameter 'password' does not seem to be injectable
+[08:46:08] [ERROR] all tested parameters do not appear to be injectable. Try to increase values for '--level'/'--risk' options if you wish to perform more tests. If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent', skipping to the next target
+[08:46:08] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/kali/ai-red-blue-lab/logs/sqlmap_retest/results-09192026_0845am.csv'
+
+[*] ending @ 08:46:08 /2026-09-19/
+
+
+[3] 🎭 STORED XSS - Re-test
+✅ PATCHED: XSS escaped correctly! (&lt;script&gt;)
+
+================================================
+📊 COMPARISON SUMMARY
+================================================
+| Vulnerability   | Before Patch | After Patch |
+|----------------|--------------|-------------|
+| SQL Injection  | EXPLOITED ❌  | BLOCKED  ✅  |
+| Stored XSS     | EXPLOITED ❌  | BLOCKED  ✅  |
+================================================
+Completed: 2026-09-19T08:46:08Z
