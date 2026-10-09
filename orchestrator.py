@@ -13,7 +13,7 @@ SESSION_ID = str(uuid.uuid4())[:8]
 
 client = OpenAI(
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    base_url="https://wisecoder.services.ai.azure.com/openai/v1",
+    base_url="",
 )
 
 RED = AgentIdentity(role="red-team", instance_id=SESSION_ID)
