@@ -97,6 +97,24 @@ python3 -c "from core.identity import verify_chain; print('chain valid:', verify
 
 ---
 
+## 🔏 Signed evidence log
+
+The hash chain shows a record changed only if the chain was not recomputed afterwards. Anyone who can write `logs/evidence_log.jsonl` can edit a record (a kill-switch `halted` turned into `permitted`) and recompute every later hash, and `verify_chain()` still returns `True`.
+
+With `LAB_SIGNING_KEY` set, `log_action()` also writes each record to `logs/signed_log.jsonl`, signed with Ed25519. An anchor, signed with a second key kept outside the agents' container, records the digest and position of the newest record, so a deleted tail or a rolled-back copy is caught too:
+
+```bash
+python3 -m core.signed_log keygen producer.key      # prints the producer public key
+python3 -m core.signed_log keygen anchor.key        # keep this one off the lab container
+LAB_SIGNING_KEY=producer.key python3 orchestrator.py
+python3 -m core.signed_log anchor --key anchor.key --producer-public <hex>
+python3 core/verify_signed_log.py logs/case.json    # verified chain_anchored
+```
+
+CI runs the verifier against the [anchored-chain corpus](https://github.com/probityai/agent-evidence-vectors/tree/v0.24.0/vectors-anchored-chain) of agent-evidence-vectors: 14 signed stores with the expected decision for each, including deleted, reordered and rolled-back records whose signatures all still verify. `tests/test_signed_log.py` runs the kill-switch edit above against both logs.
+
+---
+
 ## 📁 Repository structure
 
 ```text
@@ -105,6 +123,8 @@ python3 -c "from core.identity import verify_chain; print('chain valid:', verify
 ├── agent_scope.yaml         # per-agent policy: allowed binaries, target scope, write paths
 ├── core/
 │   ├── identity.py          # SPIFFE-style identity + hash-chained evidence log
+│   ├── signed_log.py        # Ed25519-signed copy of the log, keys, and the anchor
+│   ├── verify_signed_log.py # verifier for the signed log and its anchor
 │   ├── scope.py             # enforcement wrapper — checks BEFORE execution
 │   └── validate.py          # post-patch legitimate-functionality gate
 ├── red_agent/

@@ -56,6 +56,12 @@ def log_action(
     with open(LOG_PATH, "a") as f:
         f.write(json.dumps(record, sort_keys=True) + "\n")
 
+    signing_key = os.environ.get("LAB_SIGNING_KEY")
+    if signing_key:
+        from core.signed_log import append
+
+        append(record, signing_key)
+
     return record
 
 
