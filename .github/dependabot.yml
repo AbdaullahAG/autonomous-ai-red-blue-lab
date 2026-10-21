@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # requirements-ci.txt pins exact versions; this opens a pull request for each new release so CI
+  # runs the new corpus and library before a pin moves.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
