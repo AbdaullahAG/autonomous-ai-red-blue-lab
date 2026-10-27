@@ -111,6 +111,10 @@ python3 -m core.signed_log anchor --key anchor.key --producer-public <hex>
 python3 core/verify_signed_log.py logs/case.json    # verified chain_anchored
 ```
 
+**What the ten reported runs are.** The ten runs reported in the paper and in the results table below were made before signing existed. Their `logs/evidence_log_run*.jsonl` files are unsigned hash-chained logs, and nothing in them is protected by the signatures described here. Signing applies to runs made from this change on.
+
+**Which public keys to trust.** `case.json` carries the two public keys the verifier checks against, and it sits next to the log it describes. Whoever can rewrite the log can rewrite `case.json` too, so a `verified` result means something only when the keys in `case.json` match keys you obtained outside the lab (the producer key when the run starts, the anchor key from the machine that holds it). Compare them by hand or replace them in a copy of `case.json` before you verify.
+
 CI runs the verifier against the [anchored-chain corpus](https://github.com/probityai/agent-evidence-vectors/tree/v0.24.0/vectors-anchored-chain) of agent-evidence-vectors: 14 signed stores with the expected decision for each, including deleted, reordered and rolled-back records whose signatures all still verify. `tests/test_signed_log.py` runs the kill-switch edit above against both logs.
 
 ---
