@@ -101,12 +101,12 @@ python3 -c "from core.identity import verify_chain; print('chain valid:', verify
 
 The hash chain shows a record changed only if the chain was not recomputed afterwards. Anyone who can write `logs/evidence_log.jsonl` can edit a record (a kill-switch `halted` turned into `permitted`) and recompute every later hash, and `verify_chain()` still returns `True`.
 
-With `LAB_SIGNING_KEY` set, `log_action()` also writes each record to `logs/signed_log.jsonl`, signed with Ed25519. An anchor, signed with a second key kept outside the agents' container, records the digest and position of the newest record, so a deleted tail or a rolled-back copy is caught too:
+With `LAB_SIGNING_KEY_FILE` set, `log_action()` also writes each record to `logs/signed_log.jsonl`, signed with Ed25519. An anchor, signed with a second key kept outside the agents' container, records the digest and position of the newest record, so a deleted tail or a rolled-back copy is caught too:
 
 ```bash
 python3 -m core.signed_log keygen producer.key      # prints the producer public key
 python3 -m core.signed_log keygen anchor.key        # keep this one off the lab container
-LAB_SIGNING_KEY=producer.key python3 orchestrator.py
+LAB_SIGNING_KEY_FILE=producer.key python3 orchestrator.py
 python3 -m core.signed_log anchor --key anchor.key --producer-public <hex>
 python3 core/verify_signed_log.py logs/case.json    # verified chain_anchored
 ```

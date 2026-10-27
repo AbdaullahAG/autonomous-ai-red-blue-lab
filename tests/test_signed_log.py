@@ -28,7 +28,7 @@ class SignedLogTest(unittest.TestCase):
         os.chdir(self._tmp.name)
         self.producer_public = _keygen(Path("producer.key"))
         _keygen(Path("anchor.key"))
-        os.environ["LAB_SIGNING_KEY"] = "producer.key"
+        os.environ["LAB_SIGNING_KEY_FILE"] = "producer.key"
         red = identity.AgentIdentity(role="red-team", instance_id="test")
         for binary in ("nmap", "sqlmap", "curl"):
             identity.log_action(red, "scope_check", f"requested_binary={binary}",
@@ -36,7 +36,7 @@ class SignedLogTest(unittest.TestCase):
         identity.log_kill_switch("unsafe patch three times", 3, ["attempt-1", "attempt-2", "attempt-3"])
 
     def tearDown(self):
-        os.environ.pop("LAB_SIGNING_KEY", None)
+        os.environ.pop("LAB_SIGNING_KEY_FILE", None)
         os.chdir(self._cwd)
         self._tmp.cleanup()
 
@@ -88,7 +88,7 @@ class SignedLogTest(unittest.TestCase):
 
     def test_no_signed_log_without_a_key(self):
         os.remove(signed_log.SIGNED_LOG_PATH)
-        os.environ.pop("LAB_SIGNING_KEY")
+        os.environ.pop("LAB_SIGNING_KEY_FILE")
         identity.log_action(identity.AgentIdentity("red-team", "test"), "scope_check", "requested_binary=nmap",
                             "policy=red-team", "agent_scope.yaml", "permitted")
         self.assertFalse(os.path.exists(signed_log.SIGNED_LOG_PATH))

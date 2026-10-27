@@ -1,7 +1,7 @@
 """Signed copy of the evidence log, and the anchor over it.
 
 log_action() in core/identity.py writes every record to logs/evidence_log.jsonl
-as before. When LAB_SIGNING_KEY names a producer key file, it also appends the
+as before. When LAB_SIGNING_KEY_FILE names a producer key file, it also appends the
 record to logs/signed_log.jsonl inside an Ed25519 envelope:
 
     {"kid": "producer", "record": {...the record, "chain": ..., "prev": ...}, "sig": ...}
@@ -18,7 +18,7 @@ key outside the container the agents run in, and take the anchor from there:
 
     python3 -m core.signed_log keygen producer.key   # prints the public key
     python3 -m core.signed_log keygen anchor.key
-    LAB_SIGNING_KEY=producer.key python3 orchestrator.py
+    LAB_SIGNING_KEY_FILE=producer.key python3 orchestrator.py
     python3 -m core.signed_log anchor --key anchor.key --producer-public <hex>
     python3 core/verify_signed_log.py logs/case.json
 
