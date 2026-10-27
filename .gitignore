@@ -1,6 +1,7 @@
 # Secrets
 .env
 *.env
+*.key
 cookies.txt
 
 # Python
