@@ -29,6 +29,7 @@ import argparse
 import base64
 import json
 import os
+import sys
 import time
 from pathlib import Path
 
@@ -41,10 +42,20 @@ CHAIN = "spiffe://ai-red-blue-lab.local/evidence-log"
 SIGNED_LOG_PATH = "logs/signed_log.jsonl"
 
 
+class SignedLogError(Exception):
+    """A key or log problem to report to the operator, not a bug."""
+
+
 def load_key(path) -> Ed25519PrivateKey:
-    seed = bytes.fromhex(Path(path).read_text(encoding="utf-8").strip())
+    try:
+        text = Path(path).read_text(encoding="utf-8").strip()
+        seed = bytes.fromhex(text)
+    except OSError as err:
+        raise SignedLogError(f"cannot read key file {path}: {err.strerror or err}")
+    except ValueError:
+        raise SignedLogError(f"{path}: expected a 32-byte seed as 64 hex characters")
     if len(seed) != 32:
-        raise ValueError(f"{path}: expected a 32-byte seed as 64 hex characters")
+        raise SignedLogError(f"{path}: expected a 32-byte seed as 64 hex characters")
     return Ed25519PrivateKey.from_private_bytes(seed)
 
 
@@ -80,7 +91,7 @@ def anchor(key_path, producer_public: str, log_path=SIGNED_LOG_PATH, chain=CHAIN
     """Sign the newest record's digest and position; write anchor.json and case.json beside the log."""
     lines = _lines(log_path)
     if not lines:
-        raise ValueError(f"{log_path} holds no records to anchor")
+        raise SignedLogError(f"{log_path} holds no records to anchor")
     key = load_key(key_path)
     body = {
         "anchored_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -111,6 +122,14 @@ def main(argv=None) -> int:
     anc.add_argument("--producer-public", required=True, help="producer public key, hex")
     anc.add_argument("--log", default=SIGNED_LOG_PATH)
     args = parser.parse_args(argv)
+    try:
+        return _run(args)
+    except (SignedLogError, FileExistsError) as err:
+        print(f"signed_log: {err}", file=sys.stderr)
+        return 1
+
+
+def _run(args) -> int:
     if args.command == "keygen":
         key = Ed25519PrivateKey.generate()
         seed = key.private_bytes(serialization.Encoding.Raw, serialization.PrivateFormat.Raw,

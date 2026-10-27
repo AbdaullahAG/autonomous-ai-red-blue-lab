@@ -1,0 +1,20 @@
+{
+  "corpusDigest": "a92cf47c64f905ec6a57c4bf624c2667c075da4a76d58b4d251584831202dc86",
+  "failures": [],
+  "rail": "external",
+  "suite": "anchored-record-chain/v1",
+  "totals": {
+    "conform": 14,
+    "fail": 0,
+    "suiteRefusals": 0,
+    "vectors": 14
+  },
+  "verifier": {
+    "command": [
+      "python3",
+      "core/verify_signed_log.py"
+    ],
+    "note": "external verifier: python3 core/verify_signed_log.py",
+    "vectorsExecuted": 14
+  }
+}

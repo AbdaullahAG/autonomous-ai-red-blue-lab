@@ -22,7 +22,9 @@ The checks run in this order and the first that fails is the reason:
 A log that passes all six prints ``verified`` with ``chain_anchored``, or with
 ``records_after_last_anchor`` when records follow the anchored one: those are
 covered by the chain links only, until the next anchor. Exit 0 for verified,
-1 for rejected.
+1 for rejected. A missing or unreadable file, a malformed line or a missing or invalid
+public key is also a rejection (input_unreadable, input_malformed, key_missing,
+key_invalid) with the cause on stderr, never a traceback.
 """
 
 import base64
@@ -71,13 +73,70 @@ def signed(envelope, body_key: str, public_hex: str) -> bool:
     return True
 
 
-def verify(case_path: Path) -> dict:
-    case = json.loads(case_path.read_text(encoding="utf-8"))
+class Rejected(Exception):
+    """Input the verifier cannot check: reported as a rejection, never as a traceback."""
+
+    def __init__(self, reason: str, detail: str):
+        super().__init__(detail)
+        self.reason, self.detail = reason, detail
+
+
+def _read(path: Path, what: str) -> bytes:
+    try:
+        return path.read_bytes()
+    except OSError as err:
+        raise Rejected("input_unreadable", f"cannot read {what} {path}: {err.strerror or err}")
+
+
+def _json(data: bytes, what: str):
+    try:
+        return json.loads(data.decode("utf-8"))
+    except (ValueError, UnicodeDecodeError) as err:
+        raise Rejected("input_malformed", f"{what} is not valid JSON: {err}")
+
+
+def _public_key(case: dict, name: str) -> str:
+    keys = case.get("keys") if isinstance(case, dict) else None
+    value = keys.get(name) if isinstance(keys, dict) else None
+    if value is None or value == "":
+        raise Rejected("key_missing", f"case.json has no {name} public key")
+    try:
+        if not isinstance(value, str) or len(bytes.fromhex(value)) != 32:
+            raise ValueError
+    except ValueError:
+        raise Rejected("key_invalid", f"the {name} public key is not 64 hex characters")
+    return value
+
+
+def _load(case_path: Path):
+    case = _json(_read(case_path, "case file"), "case file")
+    if not isinstance(case, dict) or not all(isinstance(case.get(k), str) for k in ("store", "anchor", "chain")):
+        raise Rejected("input_malformed", "case file needs string fields store, anchor and chain")
+    producer, anchor_key = _public_key(case, "producer"), _public_key(case, "anchor")
     base = case_path.parent
-    lines = [line for line in (base / case["store"]).read_bytes().split(b"\n") if line]
-    anchor = json.loads((base / case["anchor"]).read_text(encoding="utf-8"))
-    envelopes = [json.loads(line) for line in lines]
-    producer, anchor_key = case["keys"]["producer"], case["keys"]["anchor"]
+    lines = [line for line in _read(base / case["store"], "signed log").split(b"\n") if line]
+    envelopes = []
+    for number, line in enumerate(lines, 1):
+        envelope = _json(line, f"signed log line {number}")
+        if not isinstance(envelope, dict):
+            raise Rejected("input_malformed", f"signed log line {number} is not a JSON object")
+        envelopes.append(envelope)
+    anchor = _json(_read(base / case["anchor"], "anchor file"), "anchor file")
+    body = anchor.get("anchor") if isinstance(anchor, dict) else None
+    if not isinstance(body, dict) or not isinstance(body.get("index"), int) or not isinstance(body.get("head"), str):
+        raise Rejected("input_malformed", "anchor file needs an anchor object with integer index and string head")
+    return case, lines, envelopes, anchor, producer, anchor_key
+
+
+def verify(case_path: Path) -> dict:
+    try:
+        return _verify(case_path)
+    except Rejected as err:
+        return {"decision": "rejected", "reason": err.reason, "detail": err.detail}
+
+
+def _verify(case_path: Path) -> dict:
+    case, lines, envelopes, anchor, producer, anchor_key = _load(case_path)
 
     if not all(signed(env, "record", producer) for env in envelopes):
         return {"decision": "rejected", "reason": "signature_invalid"}
@@ -103,7 +162,10 @@ def main(argv) -> int:
         print(__doc__, file=sys.stderr)
         return 2
     answer = verify(Path(args[0]))
+    detail = answer.pop("detail", None)
     print(json.dumps(answer, sort_keys=True) if "--json" in argv else f"{answer['decision']} {answer['reason']}")
+    if detail:
+        print(f"verify_signed_log: {detail}", file=sys.stderr)
     return 0 if answer["decision"] == "verified" else 1
 
 
