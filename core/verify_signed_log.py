@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Verify a signed, anchored evidence log.
 
-Usage: verify_signed_log.py CASE_JSON [--json]
+Usage: verify_signed_log.py CASE_JSON [--json] [--producer-public HEX] [--anchor-public HEX]
 
 CASE_JSON names the signed log (``store``), the anchor (``anchor``), the chain
 identity (``chain``) and the two public keys a reader trusts (``keys.producer``
-for the records, ``keys.anchor`` for the anchor). ``core/signed_log.py anchor``
+for the records, ``keys.anchor`` for the anchor). The case file sits beside the
+log, so whoever can rewrite the log can rewrite its keys: pass the keys you
+obtained outside the lab as ``--producer-public`` and ``--anchor-public``, and the
+verifier uses those and ignores the keys in the case file. ``core/signed_log.py anchor``
 writes one for this lab's log. The same file shape is the external-verifier
 contract of the vectors-anchored-chain corpus in agent-evidence-vectors, so CI
 runs this script against that corpus.
@@ -27,6 +30,7 @@ public key is also a rejection (input_unreadable, input_malformed, key_missing,
 key_invalid) with the cause on stderr, never a traceback.
 """
 
+import argparse
 import base64
 import hashlib
 import json
@@ -95,11 +99,14 @@ def _json(data: bytes, what: str):
         raise Rejected("input_malformed", f"{what} is not valid JSON: {err}")
 
 
-def _public_key(case: dict, name: str) -> str:
-    keys = case.get("keys") if isinstance(case, dict) else None
-    value = keys.get(name) if isinstance(keys, dict) else None
+def _public_key(case: dict, name: str, given: str = None) -> str:
+    if given is not None:
+        value = given
+    else:
+        keys = case.get("keys") if isinstance(case, dict) else None
+        value = keys.get(name) if isinstance(keys, dict) else None
     if value is None or value == "":
-        raise Rejected("key_missing", f"case.json has no {name} public key")
+        raise Rejected("key_missing", f"case.json has no {name} public key and none was given")
     try:
         if not isinstance(value, str) or len(bytes.fromhex(value)) != 32:
             raise ValueError
@@ -108,11 +115,12 @@ def _public_key(case: dict, name: str) -> str:
     return value
 
 
-def _load(case_path: Path):
+def _load(case_path: Path, given: dict):
     case = _json(_read(case_path, "case file"), "case file")
     if not isinstance(case, dict) or not all(isinstance(case.get(k), str) for k in ("store", "anchor", "chain")):
         raise Rejected("input_malformed", "case file needs string fields store, anchor and chain")
-    producer, anchor_key = _public_key(case, "producer"), _public_key(case, "anchor")
+    producer = _public_key(case, "producer", given.get("producer"))
+    anchor_key = _public_key(case, "anchor", given.get("anchor"))
     base = case_path.parent
     lines = [line for line in _read(base / case["store"], "signed log").split(b"\n") if line]
     envelopes = []
@@ -128,15 +136,16 @@ def _load(case_path: Path):
     return case, lines, envelopes, anchor, producer, anchor_key
 
 
-def verify(case_path: Path) -> dict:
+def verify(case_path: Path, producer_public: str = None, anchor_public: str = None) -> dict:
+    """Verify the log a case file names. Public keys passed in replace the case file's."""
     try:
-        return _verify(case_path)
+        return _verify(case_path, {"producer": producer_public, "anchor": anchor_public})
     except Rejected as err:
         return {"decision": "rejected", "reason": err.reason, "detail": err.detail}
 
 
-def _verify(case_path: Path) -> dict:
-    case, lines, envelopes, anchor, producer, anchor_key = _load(case_path)
+def _verify(case_path: Path, given: dict) -> dict:
+    case, lines, envelopes, anchor, producer, anchor_key = _load(case_path, given)
 
     if not all(signed(env, "record", producer) for env in envelopes):
         return {"decision": "rejected", "reason": "signature_invalid"}
@@ -157,13 +166,15 @@ def _verify(case_path: Path) -> dict:
 
 
 def main(argv) -> int:
-    args = [a for a in argv if a != "--json"]
-    if len(args) != 1:
-        print(__doc__, file=sys.stderr)
-        return 2
-    answer = verify(Path(args[0]))
+    parser = argparse.ArgumentParser(prog="verify_signed_log.py", description="Verify a signed, anchored evidence log")
+    parser.add_argument("case")
+    parser.add_argument("--json", action="store_true")
+    parser.add_argument("--producer-public", help="producer public key, 64 hex characters, from outside the lab")
+    parser.add_argument("--anchor-public", help="anchor public key, 64 hex characters, from outside the lab")
+    args = parser.parse_args(argv)
+    answer = verify(Path(args.case), args.producer_public, args.anchor_public)
     detail = answer.pop("detail", None)
-    print(json.dumps(answer, sort_keys=True) if "--json" in argv else f"{answer['decision']} {answer['reason']}")
+    print(json.dumps(answer, sort_keys=True) if args.json else f"{answer['decision']} {answer['reason']}")
     if detail:
         print(f"verify_signed_log: {detail}", file=sys.stderr)
     return 0 if answer["decision"] == "verified" else 1

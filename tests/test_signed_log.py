@@ -127,6 +127,35 @@ class VerifierFailsOnPurposeTest(SignedLogFixture):
         case.write_text(json.dumps(data))
         return case
 
+    def test_keys_given_on_the_command_line_beat_the_case_file(self):
+        # An attacker who rewrites the log and case.json together signs with their own key and
+        # puts its public half in case.json. The case file alone accepts that; keys obtained
+        # outside the lab do not.
+        case = signed_log.anchor("anchor.key", self.producer_public)
+        forged = _keygen(Path("forged.key"))
+        data = json.loads(case.read_text())
+        data["keys"]["producer"] = forged
+        case.write_text(json.dumps(data))
+        self.assertEqual(verify(case)["reason"], "signature_invalid")
+        anchor_public = signed_log.public_hex(signed_log.load_key("anchor.key"))
+        self.assertEqual(verify(case, self.producer_public, anchor_public),
+                         {"decision": "verified", "reason": "chain_anchored"})
+        wrong = verify(case, forged, anchor_public)
+        self.assertEqual(wrong, {"decision": "rejected", "reason": "signature_invalid"})
+
+    def test_command_line_keys_are_used_when_the_case_file_has_none(self):
+        case = self._edit_case(producer=None, anchor=None)
+        anchor_public = signed_log.public_hex(signed_log.load_key("anchor.key"))
+        import subprocess, sys
+        script = Path(self._cwd) / "core" / "verify_signed_log.py"
+        done = subprocess.run([sys.executable, str(script), str(case), "--producer-public", self.producer_public,
+                               "--anchor-public", anchor_public], capture_output=True, text=True)
+        self.assertEqual((done.returncode, done.stdout.strip()), (0, "verified chain_anchored"), done.stderr)
+
+    def test_invalid_command_line_key(self):
+        done = verify(self._case(), "not-hex", None)
+        self.assertEqual(done["reason"], "key_invalid")
+
     def test_missing_public_key(self):
         self._assert_rejected("key_missing", self._edit_case(producer=None))
 
@@ -191,7 +220,7 @@ class VerifierFailsOnPurposeTest(SignedLogFixture):
             os.chmod("producer.key", 0o600)
 
     def test_anchor_command_reports_a_missing_key_without_a_traceback(self):
-        with contextlib.redirect_stderr(open(os.devnull, "w")):
+        with open(os.devnull, "w") as quiet, contextlib.redirect_stderr(quiet):
             self.assertEqual(signed_log.main(["anchor", "--key", "absent.key", "--producer-public", "00"]), 1)
 
 
