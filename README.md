@@ -108,18 +108,19 @@ python3 -m core.signed_log keygen producer.key      # prints the producer public
 python3 -m core.signed_log keygen anchor.key        # keep this one off the lab container
 LAB_SIGNING_KEY_FILE=producer.key python3 orchestrator.py
 python3 -m core.signed_log anchor --key anchor.key --producer-public <hex>
-python3 core/verify_signed_log.py logs/case.json    # verified chain_anchored
+python3 core/verify_signed_log.py logs/case.json \
+    --producer-public <hex> --anchor-public <hex>   # verified chain_anchored
 ```
 
 **What the ten reported runs are.** The ten runs reported in the paper and in the results table below were made before signing existed. Their `logs/evidence_log_run*.jsonl` files are unsigned hash-chained logs, and nothing in them is protected by the signatures described here. Signing applies to runs made from this change on.
 
-**Which public keys to trust.** `case.json` carries the two public keys the verifier checks against, and it sits next to the log it describes. Whoever can rewrite the log can rewrite `case.json` too, so a `verified` result means something only when the keys in `case.json` match keys you obtained outside the lab (the producer key when the run starts, the anchor key from the machine that holds it). Compare them by hand or replace them in a copy of `case.json` before you verify.
+**Which public keys to trust.** `case.json` carries the two public keys the verifier checks against, and it sits next to the log it describes. Whoever can rewrite the log can rewrite `case.json` too, so a `verified` result means something only when the keys in `case.json` match keys you obtained outside the lab (the producer key when the run starts, the anchor key from the machine that holds it). Pass them to the verifier with `--producer-public` and `--anchor-public`: it then uses those and ignores the keys in `case.json`.
 
 **Keeping the producer key from the attack scripts and the patched app.** Today it is not kept from them. The orchestrator, the attack scripts and the patched app all run as one user in one container, and `log_action()` reads the producer key file in the orchestrator's own process, so any code running as that user can read the key and sign records of its own choosing. File permissions such as `chmod 0400` do not change this, because the reader is the same user. What the signatures protect today is a log edited or re-chained by someone who has no access to the key file, for example after the run from a copied log, and a deleted tail or rolled-back copy, which the anchor catches because its key never enters the container. They do not protect against a compromised red agent or patched app that reaches the key during the run.
 
 The separation this needs is a signer the agents cannot reach. The smallest version is an external signer process, run as its own OS user (or in its own container) that owns a `0400` producer key, listening on a Unix socket in a directory only the orchestrator's user can enter. `log_action()` sends each record to the socket and appends the signed line it gets back. The attack scripts and the patched app are then started as a third user (for example through `subprocess.Popen(..., user=...)`, or as separate containers) with no access to the socket directory. This is not implemented yet; the key-file mode above is what ships, and it should be read as protection against after-the-fact edits only.
 
-CI runs the verifier against the [anchored-chain corpus](https://github.com/probityai/agent-evidence-vectors/tree/v0.18.1/vectors-anchored-chain) of agent-evidence-vectors: 14 signed stores with the expected decision for each, including deleted, reordered and rolled-back records whose signatures all still verify. `tests/test_signed_log.py` runs the kill-switch edit above against both logs.
+CI runs the verifier against the [anchored-chain corpus](https://github.com/probityai/agent-evidence-vectors/tree/v0.18.1/vectors-anchored-chain) of agent-evidence-vectors: 14 signed stores with the expected decision for each, including deleted, reordered and rolled-back records whose signatures all still verify. The corpus is maintained by astrogilda, who wrote this change. `tests/test_signed_log.py` runs the kill-switch edit above against both logs. The corpus run writes `conformance-report.json` into the working directory; the file is not committed.
 
 ---
 
