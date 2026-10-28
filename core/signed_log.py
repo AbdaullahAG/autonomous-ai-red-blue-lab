@@ -20,7 +20,8 @@ key outside the container the agents run in, and take the anchor from there:
     python3 -m core.signed_log keygen anchor.key
     LAB_SIGNING_KEY_FILE=producer.key python3 orchestrator.py
     python3 -m core.signed_log anchor --key anchor.key --producer-public <hex>
-    python3 core/verify_signed_log.py logs/case.json
+    python3 core/verify_signed_log.py logs/case.json \\
+        --producer-public <hex> --anchor-public <hex>
 
 Key files hold a 32-byte Ed25519 seed as 64 hex characters.
 """
@@ -76,14 +77,28 @@ def _lines(path) -> list:
         return [line for line in f.read().split(b"\n") if line]
 
 
-def append(record: dict, key_path, log_path=SIGNED_LOG_PATH, chain=CHAIN) -> bytes:
-    """Sign one record and append it to the signed log; returns the line written."""
+def prepare(record: dict, key_path, log_path=SIGNED_LOG_PATH, chain=CHAIN) -> bytes:
+    """Sign one record and return the line to append, writing nothing.
+
+    log_action() calls this before it writes the unsigned log, so a missing or
+    unreadable key stops the action before either log changes.
+    """
     lines = _lines(log_path)
     body = dict(record, chain=chain, prev=sha256_hex(lines[-1]) if lines else GENESIS)
-    line = _envelope("record", body, "producer", load_key(key_path))
+    return _envelope("record", body, "producer", load_key(key_path))
+
+
+def write(line: bytes, log_path=SIGNED_LOG_PATH) -> None:
+    """Append a line returned by prepare() to the signed log."""
     os.makedirs(os.path.dirname(log_path) or ".", exist_ok=True)
     with open(log_path, "ab") as f:
         f.write(line + b"\n")
+
+
+def append(record: dict, key_path, log_path=SIGNED_LOG_PATH, chain=CHAIN) -> bytes:
+    """Sign one record and append it to the signed log; returns the line written."""
+    line = prepare(record, key_path, log_path, chain)
+    write(line, log_path)
     return line
 
 

@@ -168,6 +168,15 @@ class VerifierFailsOnPurposeTest(SignedLogFixture):
             identity.log_action(identity.AgentIdentity("red-team", "test"), "p", "a", "s", "b", "permitted")
         self.assertIn("absent.key", str(caught.exception))
 
+    def test_missing_signing_key_file_writes_no_unsigned_record(self):
+        before = Path(identity.LOG_PATH).read_bytes()
+        signed_before = Path(signed_log.SIGNED_LOG_PATH).read_bytes()
+        os.environ["LAB_SIGNING_KEY_FILE"] = "absent.key"
+        with self.assertRaises(signed_log.SignedLogError):
+            identity.log_action(identity.AgentIdentity("red-team", "test"), "p", "a", "s", "b", "permitted")
+        self.assertEqual(Path(identity.LOG_PATH).read_bytes(), before)
+        self.assertEqual(Path(signed_log.SIGNED_LOG_PATH).read_bytes(), signed_before)
+
     def test_unreadable_and_malformed_key_files(self):
         Path("bad.key").write_text("zz\n")
         with self.assertRaises(signed_log.SignedLogError):
