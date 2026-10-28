@@ -1,12 +1,17 @@
 version: 2
 updates:
   # requirements-ci.txt pins exact versions; this opens a pull request for each new release so CI
-  # runs the new corpus and library before a pin moves.
+  # runs the new corpus and library before a pin moves. A release must be 14 days old before
+  # a pull request is opened for it.
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 14
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 14

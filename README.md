@@ -119,7 +119,7 @@ python3 core/verify_signed_log.py logs/case.json    # verified chain_anchored
 
 The separation this needs is a signer the agents cannot reach. The smallest version is an external signer process, run as its own OS user (or in its own container) that owns a `0400` producer key, listening on a Unix socket in a directory only the orchestrator's user can enter. `log_action()` sends each record to the socket and appends the signed line it gets back. The attack scripts and the patched app are then started as a third user (for example through `subprocess.Popen(..., user=...)`, or as separate containers) with no access to the socket directory. This is not implemented yet; the key-file mode above is what ships, and it should be read as protection against after-the-fact edits only.
 
-CI runs the verifier against the [anchored-chain corpus](https://github.com/probityai/agent-evidence-vectors/tree/v0.24.0/vectors-anchored-chain) of agent-evidence-vectors: 14 signed stores with the expected decision for each, including deleted, reordered and rolled-back records whose signatures all still verify. `tests/test_signed_log.py` runs the kill-switch edit above against both logs.
+CI runs the verifier against the [anchored-chain corpus](https://github.com/probityai/agent-evidence-vectors/tree/v0.18.1/vectors-anchored-chain) of agent-evidence-vectors: 14 signed stores with the expected decision for each, including deleted, reordered and rolled-back records whose signatures all still verify. `tests/test_signed_log.py` runs the kill-switch edit above against both logs.
 
 ---
 
