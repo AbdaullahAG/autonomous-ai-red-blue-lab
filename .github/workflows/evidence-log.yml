@@ -1,0 +1,32 @@
+name: Evidence log
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  signed-log:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: Install
+        run: python -m pip install --quiet -r requirements-ci.txt
+
+      - name: Signed log tests
+        run: python -m unittest discover -v -s tests -t .
+
+      - name: Verifier against the anchored-chain corpus
+        # 14 signed stores with the expected decision and reason for each: deleted, reordered,
+        # replayed and rolled-back records that every signature still verifies, plus controls.
+        run: agent-evidence-vectors --corpus vectors-anchored-chain --verifier "python3 core/verify_signed_log.py"

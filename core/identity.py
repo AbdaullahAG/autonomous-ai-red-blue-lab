@@ -53,8 +53,19 @@ def log_action(
     record_hash = hashlib.sha256((prev_hash + record_str).encode()).hexdigest()
     record["record_hash"] = record_hash
 
+    # Sign before either log is written: a missing or bad key file raises here and
+    # leaves both logs as they were, instead of one unsigned record.
+    key_file = os.environ.get("LAB_SIGNING_KEY_FILE")
+    signed_line = None
+    if key_file:
+        from core import signed_log
+
+        signed_line = signed_log.prepare(record, key_file)
+
     with open(LOG_PATH, "a") as f:
         f.write(json.dumps(record, sort_keys=True) + "\n")
+    if signed_line is not None:
+        signed_log.write(signed_line)
 
     return record
 

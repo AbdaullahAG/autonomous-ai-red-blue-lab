@@ -1,6 +1,7 @@
 # Secrets
 .env
 *.env
+*.key
 cookies.txt
 
 # Python
@@ -29,3 +30,6 @@ nohup.out
 
 # OS
 .DS_Store
+
+# Written by `agent-evidence-vectors --corpus` into the working directory
+conformance-report.json
